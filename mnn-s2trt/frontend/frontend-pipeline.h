@@ -68,7 +68,7 @@ class StreamingFrontend : public Frontend {
 
   // Specify whether pending pcm is enough to emit feats chunk.
   bool IsReady() const;
-  
+
   // Interface to accept flushed in pcms.
   virtual void AcceptPcms(const std::vector<float>& pcms);
 
@@ -86,9 +86,9 @@ class StreamingFrontend : public Frontend {
 
   std::deque<std::vector<float>> pcms_pending_;
   int32_t num_pending_pcms_;
-  int32_t start_offset_of_front_;  // Start index of front pcms in pending queue.
-  
-  std::vector<float> last_pcm_cache_; // Cache for next chunk.
+  int32_t start_offset_of_front_;  // Offset of front pcms slice over queue.
+
+  std::vector<float> last_pcm_cache_;  // Cache for next chunk.
 };
 
 }  // namespace frontend

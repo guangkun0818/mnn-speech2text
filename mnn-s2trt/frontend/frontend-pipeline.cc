@@ -12,7 +12,8 @@ namespace frontend {
 
 Frontend::Frontend(const FbankOptions& opts, const bool pcm_normalize)
     : pcm_normalize_(pcm_normalize), opts_(opts) {
-  // Mandatorily using default setting in lhotes_feats, since it might not changed In most cases
+  // Mandatorily using default setting in lhotes_feats, since it might not
+  // changed In most cases
   CHECK_EQ(opts_.mel_opts.num_bins, 80);        // 80 dim fbank.
   CHECK_EQ(opts_.mel_opts.low_freq, 20.0f);     // Default setting in lhotes
   CHECK_EQ(opts_.mel_opts.high_freq, -400.0f);  // Default setting in lhotes
@@ -74,9 +75,11 @@ StreamingFrontend::StreamingFrontend(const FbankOptions& opts,
 
      first frame:  |------25ms-------|
                    |-10ms-|---15ms---|
+
      second frame: |-10ms-|------25ms------|
                    |-10ms-|---15ms---|
         residual pcm 15ms >= frame_shift / 2, enable padding.
+
      third frame:  |-10ms-|-10ms-|------25ms------|
                    |-10ms-|-10ms-|5ms|
         residual pcm 5ms >= frame_shift / 2, enable padding.
@@ -102,7 +105,7 @@ void StreamingFrontend::Reset() {
 }
 
 bool StreamingFrontend::IsReady() const {
-    return num_pending_pcms_ + last_pcm_cache_.size() > pcm_chunk_size_;
+  return num_pending_pcms_ + last_pcm_cache_.size() > pcm_chunk_size_;
 }
 
 void StreamingFrontend::AcceptPcms(const std::vector<float>& pcms) {
@@ -128,14 +131,17 @@ void StreamingFrontend::PreparePcms() {
       pcms_to_extract_.size();  // Residual required pcms for one chunk.
 
   while (pcms_to_extract_.size() < pcm_chunk_size_) {
-    if ((pcms_pending_.front().size() - start_offset_of_front_) <= num_residual) {
-      
-      // Comsume the front slice of pcm if the front slice of pending pcm cannot fullfill
-      // or just match the required residual, then pop out the front slice.
+    if ((pcms_pending_.front().size() - start_offset_of_front_) <=
+        num_residual) {
+      // Comsume the front slice of pcm if the front slice of pending pcm cannot
+      // fullfill or just match the required residual, then pop out the front
+      // slice.
       num_residual -= pcms_pending_.front().size() - start_offset_of_front_;
-      num_pending_pcms_ -= pcms_pending_.front().size() - start_offset_of_front_;
-      
-      auto start_offset = pcms_pending_.front().begin() + start_offset_of_front_;
+      num_pending_pcms_ -=
+          pcms_pending_.front().size() - start_offset_of_front_;
+
+      auto start_offset =
+          pcms_pending_.front().begin() + start_offset_of_front_;
       auto end_offset = pcms_pending_.front().end();
 
       pcms_to_extract_.insert(pcms_to_extract_.end(), start_offset, end_offset);
@@ -145,7 +151,8 @@ void StreamingFrontend::PreparePcms() {
     } else {
       // Or only move forward start_offset of front pending pcm queue.
       num_pending_pcms_ -= num_residual;
-      auto start_offset = pcms_pending_.front().begin() + start_offset_of_front_;
+      auto start_offset =
+          pcms_pending_.front().begin() + start_offset_of_front_;
       auto end_offset =
           pcms_pending_.front().begin() + start_offset_of_front_ + num_residual;
 
