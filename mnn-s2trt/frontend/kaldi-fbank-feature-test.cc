@@ -84,7 +84,7 @@ TEST_F(TestKaldiFbankFeature, TestComputeFeats) {
     *iter = (*iter) / 32768;
   }
 
-  std::cout << NumFrames(12560, opts_.frame_opts) << std::endl;
+  ASSERT_EQ(NumFrames(12560, opts_.frame_opts), 79);
   auto num_frames = NumFrames(wav_reader_->num_samples(), opts_.frame_opts);
 
   auto window_function = FeatureWindowFunction(opts_.frame_opts);
