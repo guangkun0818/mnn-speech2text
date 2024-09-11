@@ -29,16 +29,16 @@ void Frontend::AcceptPcms(const std::vector<float>& pcms) {
   this->Reset();  // Reset every time pcm flush in.
   if (this->pcm_normalize_) {
     for (auto sample : pcms) {
-      pcms_to_extract_.push_back(sample * NORMALIZE_FACTOR);
+      pcms_ready_.push_back(sample * NORMALIZE_FACTOR);
     }
   } else {
-    pcms_to_extract_.insert(pcms_to_extract_.end(), pcms.begin(), pcms.end());
+    pcms_ready_.insert(pcms_ready_.end(), pcms.begin(), pcms.end());
   }
 }
 
 void Frontend::EmitFeats(std::vector<std::vector<float>>& feats, bool is_last) {
   feats.clear();
-  auto num_frames = NumFrames(pcms_to_extract_.size(), opts_.frame_opts);
+  auto num_frames = NumFrames(pcms_ready_.size(), opts_.frame_opts);
   CHECK_GT(num_frames, 0);  // should be larger than 0
 
   bool need_raw_log_energy =
@@ -49,9 +49,8 @@ void Frontend::EmitFeats(std::vector<std::vector<float>>& feats, bool is_last) {
   for (int frame_id = 0; frame_id < num_frames; frame_id++) {
     std::fill(window.begin(), window.end(), 0);
     float raw_log_energy = 0.0;
-    ExtractWindow(0, pcms_to_extract_, frame_id, opts_.frame_opts,
-                  window_function_, &window,
-                  need_raw_log_energy ? &raw_log_energy : nullptr);
+    ExtractWindow(0, pcms_ready_, frame_id, opts_.frame_opts, window_function_,
+                  &window, need_raw_log_energy ? &raw_log_energy : nullptr);
 
     // With default setting of NeedRawLogEnergy = false, feat_dim = num_bins,
     // otherwise feat_dim = num_bins + 1.
@@ -97,7 +96,7 @@ StreamingFrontend::StreamingFrontend(const FbankOptions& opts,
 }
 
 void StreamingFrontend::Reset() {
-  pcms_to_extract_.clear();
+  pcms_ready_.clear();
   pcms_pending_.clear();
   num_pending_pcms_ = 0;
   start_offset_of_front_ = 0;
@@ -115,7 +114,7 @@ void StreamingFrontend::AcceptPcms(const std::vector<float>& pcms) {
       coming_pcm.push_back(sample * NORMALIZE_FACTOR);
     }
   } else {
-    coming_pcm.insert(pcms_to_extract_.end(), pcms.begin(), pcms.end());
+    coming_pcm.insert(coming_pcm.end(), pcms.begin(), pcms.end());
   }
   this->pcms_pending_.push_back(coming_pcm);
   this->num_pending_pcms_ += coming_pcm.size();
@@ -123,14 +122,14 @@ void StreamingFrontend::AcceptPcms(const std::vector<float>& pcms) {
 
 void StreamingFrontend::PreparePcms() {
   // Preppend last pcm cache.
-  pcms_to_extract_.clear();
-  pcms_to_extract_.insert(pcms_to_extract_.end(), last_pcm_cache_.begin(),
-                          last_pcm_cache_.end());
+  pcms_ready_.clear();
+  pcms_ready_.insert(pcms_ready_.end(), last_pcm_cache_.begin(),
+                     last_pcm_cache_.end());
   auto num_residual =
       pcm_chunk_size_ -
-      pcms_to_extract_.size();  // Residual required pcms for one chunk.
+      pcms_ready_.size();  // Residual required pcms for one chunk.
 
-  while (pcms_to_extract_.size() < pcm_chunk_size_) {
+  while (pcms_ready_.size() < pcm_chunk_size_) {
     if ((pcms_pending_.front().size() - start_offset_of_front_) <=
         num_residual) {
       // Comsume the front slice of pcm if the front slice of pending pcm cannot
@@ -144,7 +143,7 @@ void StreamingFrontend::PreparePcms() {
           pcms_pending_.front().begin() + start_offset_of_front_;
       auto end_offset = pcms_pending_.front().end();
 
-      pcms_to_extract_.insert(pcms_to_extract_.end(), start_offset, end_offset);
+      pcms_ready_.insert(pcms_ready_.end(), start_offset, end_offset);
 
       pcms_pending_.pop_front();
       start_offset_of_front_ = 0;  // Point reset to start of pcm queue front.
@@ -156,7 +155,7 @@ void StreamingFrontend::PreparePcms() {
       auto end_offset =
           pcms_pending_.front().begin() + start_offset_of_front_ + num_residual;
 
-      pcms_to_extract_.insert(pcms_to_extract_.end(), start_offset, end_offset);
+      pcms_ready_.insert(pcms_ready_.end(), start_offset, end_offset);
 
       start_offset_of_front_ += num_residual;
     }
@@ -165,10 +164,10 @@ void StreamingFrontend::PreparePcms() {
   // Update last_pcm_cache.
   std::vector<float>().swap(last_pcm_cache_);
   last_pcm_cache_.insert(last_pcm_cache_.end(),
-                         pcms_to_extract_.end() - pcm_cache_size_,
-                         pcms_to_extract_.end());
+                         pcms_ready_.end() - pcm_cache_size_,
+                         pcms_ready_.end());
   CHECK_EQ(last_pcm_cache_.size(), pcm_cache_size_);
-  CHECK_EQ(pcms_to_extract_.size(), pcm_chunk_size_);
+  CHECK_EQ(pcms_ready_.size(), pcm_chunk_size_);
 }
 
 void StreamingFrontend::EmitFeats(std::vector<std::vector<float>>& feats,
@@ -179,7 +178,7 @@ void StreamingFrontend::EmitFeats(std::vector<std::vector<float>>& feats,
   }
   this->PreparePcms();
 
-  auto num_frames = NumFrames(pcms_to_extract_.size(), opts_.frame_opts);
+  auto num_frames = NumFrames(pcms_ready_.size(), opts_.frame_opts);
   // Last 2 frames should be discarded since it involved with padding
   // with given setting frame_shift_ms = 10.0f / frame_length_ms = 25.0f
   // if not the last chunk.
@@ -195,9 +194,8 @@ void StreamingFrontend::EmitFeats(std::vector<std::vector<float>>& feats,
   for (int frame_id = 0; frame_id < num_frames; frame_id++) {
     std::fill(window.begin(), window.end(), 0);
     float raw_log_energy = 0.0;
-    ExtractWindow(0, pcms_to_extract_, frame_id, opts_.frame_opts,
-                  window_function_, &window,
-                  need_raw_log_energy ? &raw_log_energy : nullptr);
+    ExtractWindow(0, pcms_ready_, frame_id, opts_.frame_opts, window_function_,
+                  &window, need_raw_log_energy ? &raw_log_energy : nullptr);
 
     // With default setting of NeedRawLogEnergy = false, feat_dim = num_bins,
     // otherwise feat_dim = num_bins + 1.

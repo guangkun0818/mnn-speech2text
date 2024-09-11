@@ -32,7 +32,7 @@ class Frontend {
   virtual ~Frontend(){};
 
   // Reset Non streaming frontend pipeline.
-  void Reset() { pcms_to_extract_.clear(); }
+  void Reset() { pcms_ready_.clear(); }
 
   // Interface to accept flushed in pcms.
   virtual void AcceptPcms(const std::vector<float>& pcms);
@@ -47,7 +47,7 @@ class Frontend {
   FeatureWindowFunction window_function_;
 
   std::shared_ptr<FbankComputer> feat_computer_;
-  std::vector<float> pcms_to_extract_;
+  std::vector<float> pcms_ready_;
 };
 
 class StreamingFrontend : public Frontend {
