@@ -80,6 +80,8 @@ class StreamingFrontend : public Frontend {
   // Prepare pcm_to_extract from pending pcm.
   void PreparePcms();
 
+  void ComsumePendingPcms(size_t pcm_required_size);
+
   int32_t feat_chunk_size_;  // Chunk size of feature frame
   int32_t pcm_chunk_size_;   // Chunk size of pcm samples.
   int32_t pcm_cache_size_;   // Cache size of pcm samples after every emit.

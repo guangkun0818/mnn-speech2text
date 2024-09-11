@@ -125,41 +125,11 @@ void StreamingFrontend::PreparePcms() {
   pcms_ready_.clear();
   pcms_ready_.insert(pcms_ready_.end(), last_pcm_cache_.begin(),
                      last_pcm_cache_.end());
-  auto num_residual =
+  auto pcm_required_size =
       pcm_chunk_size_ -
       pcms_ready_.size();  // Residual required pcms for one chunk.
 
-  while (pcms_ready_.size() < pcm_chunk_size_) {
-    if ((pcms_pending_.front().size() - start_offset_of_front_) <=
-        num_residual) {
-      // Comsume the front slice of pcm if the front slice of pending pcm cannot
-      // fullfill or just match the required residual, then pop out the front
-      // slice.
-      num_residual -= pcms_pending_.front().size() - start_offset_of_front_;
-      num_pending_pcms_ -=
-          pcms_pending_.front().size() - start_offset_of_front_;
-
-      auto start_offset =
-          pcms_pending_.front().begin() + start_offset_of_front_;
-      auto end_offset = pcms_pending_.front().end();
-
-      pcms_ready_.insert(pcms_ready_.end(), start_offset, end_offset);
-
-      pcms_pending_.pop_front();
-      start_offset_of_front_ = 0;  // Point reset to start of pcm queue front.
-    } else {
-      // Or only move forward start_offset of front pending pcm queue.
-      num_pending_pcms_ -= num_residual;
-      auto start_offset =
-          pcms_pending_.front().begin() + start_offset_of_front_;
-      auto end_offset =
-          pcms_pending_.front().begin() + start_offset_of_front_ + num_residual;
-
-      pcms_ready_.insert(pcms_ready_.end(), start_offset, end_offset);
-
-      start_offset_of_front_ += num_residual;
-    }
-  }
+  this->ComsumePendingPcms(pcm_required_size);
 
   // Update last_pcm_cache.
   std::vector<float>().swap(last_pcm_cache_);
@@ -168,6 +138,48 @@ void StreamingFrontend::PreparePcms() {
                          pcms_ready_.end());
   CHECK_EQ(last_pcm_cache_.size(), pcm_cache_size_);
   CHECK_EQ(pcms_ready_.size(), pcm_chunk_size_);
+}
+
+void StreamingFrontend::ComsumePendingPcms(size_t pcm_required_size) {
+  while (pcm_required_size > 0) {
+    if ((pcms_pending_.front().size() - start_offset_of_front_) <=
+        pcm_required_size) {
+      // Comsume the front slice of pcm if the front slice of pending pcm cannot
+      // fullfill or just match the required residual, then pop out the front
+      // slice.
+      auto start_offset =
+          pcms_pending_.front().begin() + start_offset_of_front_;
+      auto end_offset = pcms_pending_.front().end();
+      pcms_ready_.insert(pcms_ready_.end(), start_offset, end_offset);
+
+      auto pcm_cosumed_size =
+          pcms_pending_.front().size() - start_offset_of_front_;
+
+      // Update num_pending_pcms_/pcm_required_size/start_offset_of_front_
+      start_offset_of_front_ = 0;  // Reset to start of next pcm slice.
+      num_pending_pcms_ -= pcm_cosumed_size;
+      pcm_required_size -= pcm_cosumed_size;
+
+      pcms_pending_.pop_front();
+
+    } else {
+      // Or only move forward start_offset of front pending pcm queue.
+      auto start_offset =
+          pcms_pending_.front().begin() + start_offset_of_front_;
+      auto end_offset = pcms_pending_.front().begin() + start_offset_of_front_ +
+                        pcm_required_size;
+      pcms_ready_.insert(pcms_ready_.end(), start_offset, end_offset);
+
+      auto pcm_cosumed_size = pcm_required_size;
+
+      // Update num_pending_pcms_/pcm_required_size/start_offset_of_front_
+      start_offset_of_front_ += pcm_cosumed_size;
+      num_pending_pcms_ -= pcm_cosumed_size;
+      pcm_required_size -= pcm_cosumed_size;
+    }
+  }
+
+  CHECK_EQ(pcm_required_size, 0);
 }
 
 void StreamingFrontend::EmitFeats(std::vector<std::vector<float>>& feats,
