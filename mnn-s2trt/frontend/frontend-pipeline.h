@@ -32,7 +32,7 @@ class Frontend {
   virtual ~Frontend(){};
 
   // Reset Non streaming frontend pipeline.
-  void Reset() { pcms_to_extract_.clear(); }
+  void Reset() { pcms_ready_.clear(); }
 
   // Interface to accept flushed in pcms.
   virtual void AcceptPcms(const std::vector<float>& pcms);
@@ -47,7 +47,7 @@ class Frontend {
   FeatureWindowFunction window_function_;
 
   std::shared_ptr<FbankComputer> feat_computer_;
-  std::vector<float> pcms_to_extract_;
+  std::vector<float> pcms_ready_;
 };
 
 class StreamingFrontend : public Frontend {
@@ -68,7 +68,7 @@ class StreamingFrontend : public Frontend {
 
   // Specify whether pending pcm is enough to emit feats chunk.
   bool IsReady() const;
-  
+
   // Interface to accept flushed in pcms.
   virtual void AcceptPcms(const std::vector<float>& pcms);
 
@@ -80,15 +80,17 @@ class StreamingFrontend : public Frontend {
   // Prepare pcm_to_extract from pending pcm.
   void PreparePcms();
 
+  void ComsumePendingPcms(size_t pcm_required_size);
+
   int32_t feat_chunk_size_;  // Chunk size of feature frame
   int32_t pcm_chunk_size_;   // Chunk size of pcm samples.
   int32_t pcm_cache_size_;   // Cache size of pcm samples after every emit.
 
   std::deque<std::vector<float>> pcms_pending_;
   int32_t num_pending_pcms_;
-  int32_t start_offset_of_front_;  // Start index of front pcms in pending queue.
-  
-  std::vector<float> last_pcm_cache_; // Cache for next chunk.
+  int32_t start_offset_of_front_;  // Offset of front pcms slice over queue.
+
+  std::vector<float> last_pcm_cache_;  // Cache for next chunk.
 };
 
 }  // namespace frontend
