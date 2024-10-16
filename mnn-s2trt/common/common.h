@@ -6,11 +6,12 @@
 #define _MNN_S2TRT_COMMON_H_
 
 #include "MNN/Interpreter.hpp"
+#include "MNN/MNNForwardType.h"
 
-namespace s2rtr {
+namespace s2trt {
 
 namespace mnn = MNN;  // alias of MNN.
 
-}  // namespace s2rtr
+}  // namespace s2trt
 
 #endif
