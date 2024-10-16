@@ -20,3 +20,11 @@ class TestMnnPredictor : public ::testing::Test {
 };
 
 TEST_F(TestMnnPredictor, TestPredictorInit) { mnn_predictor_->Init(4); }
+
+TEST_F(TestMnnPredictor, TestPredictorStreamingStep) {
+  mnn_predictor_->Init(4);
+
+  std::vector<int> pred_in = {1, 2, 3, 4};
+  mnn_predictor_->StreamingStep(pred_in);
+  mnn_predictor_->GetPredOut()->print();
+}

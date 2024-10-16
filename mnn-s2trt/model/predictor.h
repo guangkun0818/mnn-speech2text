@@ -28,6 +28,8 @@ class MnnPredictor {
 
   void StreamingStep(const std::vector<int>& pred_in);
 
+  mnn::Tensor* GetPredOut();
+
  private:
   // Model resource.
   std::shared_ptr<mnn::Interpreter> model_;
@@ -37,8 +39,6 @@ class MnnPredictor {
   mnn::Session* session_;
 
   // Predictor states.
-  std::shared_ptr<mnn::Tensor> pred_state_;
-  int beam_size_;
   int context_size_;
 };
 
