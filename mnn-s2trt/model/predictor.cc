@@ -32,6 +32,17 @@ void MnnPredictor::Init(const int beam_size) {
   for (int i = 0; i < pred_state_->elementSize(); i++) {
     pred_state_->host<float>()[i] = 0.0;
   }
+  this->model_->resizeTensor(
+      this->model_->getSessionInput(this->session_, "prev_states"),
+      init_input_shape);
+
+  std::vector<int> pred_in_shape = {beam_size, 1};  // {beam_size, 1}
+  this->model_->resizeTensor(
+      this->model_->getSessionInput(this->session_, "pred_in"),
+      init_input_shape);
+
+  // Resize session with input beam_size.
+  this->model_->resizeSession(this->session_);
 }
 
 void MnnPredictor::StreamingStep(const std::vector<int>& pred_in) {}
