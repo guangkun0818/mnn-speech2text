@@ -3,7 +3,7 @@
 // Created on 2023.10.16
 // Unittest of Predictor
 
-#include "mnn-s2trt/model/predictor.h"
+#include "mnn-s2trt/models/predictor.h"
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"

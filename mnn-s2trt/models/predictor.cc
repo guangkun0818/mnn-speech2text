@@ -3,7 +3,7 @@
 // Created on 2023.09.30
 // Wrapped Predictor of transducer of mnn runtime.
 
-#include "mnn-s2trt/model/predictor.h"
+#include "mnn-s2trt/models/predictor.h"
 
 namespace s2trt {
 namespace models {
