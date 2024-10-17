@@ -28,7 +28,8 @@ class MnnJoiner {
 
   void StreamingStep(mnn::Tensor* enc_out, mnn::Tensor* pred_out);
 
-  mnn::Tensor* GetJoinerOut();
+  // Return logits with shape (beam_size, vocab_size)
+  std::vector<std::vector<float>> GetJoinerOut() const;
 
  private:
   // Model resource.

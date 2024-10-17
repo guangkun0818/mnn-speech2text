@@ -45,8 +45,20 @@ void MnnJoiner::StreamingStep(mnn::Tensor* enc_out, mnn::Tensor* pred_out) {
   this->model_->runSession(this->session_);
 }
 
-mnn::Tensor* MnnJoiner::GetJoinerOut() {
-  return this->model_->getSessionOutput(this->session_, "logit");
+std::vector<std::vector<float>> MnnJoiner::GetJoinerOut() const {
+  auto logit_t = this->model_->getSessionOutput(this->session_, "logit");
+  auto logit_shape = logit_t->shape();
+  std::vector<std::vector<float>> logit_vec(
+      logit_shape[0],
+      std::vector<float>(logit_shape[1]));  // {beam_size, vocab_size}
+
+  for (int beam = 0; beam < logit_shape[0]; beam++) {
+    // Copy logits of each beam from output logit tensor.
+    memcpy(logit_vec[beam].data(),
+           logit_t->host<float>() + (beam * logit_shape[1]),
+           sizeof(float) * logit_shape[1]);
+  }
+  return logit_vec;
 }
 
 }  // namespace models
