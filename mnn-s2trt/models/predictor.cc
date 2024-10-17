@@ -22,6 +22,10 @@ MnnPredictor::MnnPredictor(const char* predictor_model, size_t context_size)
   CHECK_NE(this->session_, nullptr);
 }
 
+MnnPredictor::~MnnPredictor() {
+  CHECK(this->model_->releaseSession(this->session_));
+}
+
 void MnnPredictor::Init(const int beam_size) {
   // Predictor state shape: {beam_size, context_size - 1}
   std::vector<int> init_input_shape = {beam_size, this->context_size_ - 1};
