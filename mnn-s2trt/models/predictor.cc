@@ -3,7 +3,7 @@
 // Created on 2023.09.30
 // Wrapped Predictor of transducer of mnn runtime.
 
-#include "mnn-s2trt/model/predictor.h"
+#include "mnn-s2trt/models/predictor.h"
 
 namespace s2trt {
 namespace models {
@@ -20,6 +20,10 @@ MnnPredictor::MnnPredictor(const char* predictor_model, size_t context_size)
 
   this->session_ = model_->createSession(config_);
   CHECK_NE(this->session_, nullptr);
+}
+
+MnnPredictor::~MnnPredictor() {
+  CHECK(this->model_->releaseSession(this->session_));
 }
 
 void MnnPredictor::Init(const int beam_size) {

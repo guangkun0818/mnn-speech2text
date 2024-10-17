@@ -15,3 +15,17 @@ add_test(
   NAME predictor-test
   COMMAND predictor-test
   WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/..)
+
+add_library(joiner_shared SHARED joiner.cc) # shared
+add_library(joiner_static STATIC joiner.cc) # static
+
+target_link_libraries(joiner_shared glog MNN)
+target_link_libraries(joiner_static glog MNN)
+
+# Unittest of kaldi-fbank-feature.
+add_executable(joiner-test joiner-test.cc)
+target_link_libraries(joiner-test joiner_shared gtest_main)
+add_test(
+  NAME joiner-test
+  COMMAND joiner-test
+  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/..)

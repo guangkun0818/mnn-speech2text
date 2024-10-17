@@ -22,7 +22,7 @@ class MnnPredictor {
  public:
   explicit MnnPredictor(const char* predictor_model, size_t context_size);
 
-  ~MnnPredictor(){};
+  ~MnnPredictor();
 
   void Init(const int beam_size);
 
