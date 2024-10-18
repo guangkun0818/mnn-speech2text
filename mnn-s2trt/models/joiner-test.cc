@@ -21,12 +21,12 @@ class TestMnnJoiner : public ::testing::Test {
 
 TEST_F(TestMnnJoiner, TestMnnJoinerStreamingStep) {
   mnn_joiner_->Init(4);
-  std::vector<int> pred_out_shape = {4, 1, 512};
+  std::vector<int> pred_out_shape = {4, 1, 256};
   auto pred_out_data =
-      std::vector<int>(4 * 1 * 512, 0.13471);  // Dummy pred_out;
+      std::vector<int>(4 * 1 * 256, 0.13471);  // Dummy pred_out;
 
-  std::vector<int> enc_out_shape = {1, 1, 512};
-  auto enc_out_data = std::vector<int>(1 * 1 * 512, 0.81729);  // Dummy enc_out;
+  std::vector<int> enc_out_shape = {1, 1, 256};
+  auto enc_out_data = std::vector<int>(1 * 1 * 256, 0.81729);  // Dummy enc_out;
 
   mnn::Tensor* pred_out = mnn::Tensor::create<float>(
       pred_out_shape, static_cast<void*>(pred_out_data.data()),
@@ -38,6 +38,6 @@ TEST_F(TestMnnJoiner, TestMnnJoinerStreamingStep) {
   mnn_joiner_->StreamingStep(enc_out, pred_out);
   auto logits = mnn_joiner_->GetJoinerOut();
 
-  pred_out->~Tensor();
-  enc_out->~Tensor();
+  mnn::Tensor::destroy(pred_out);
+  mnn::Tensor::destroy(enc_out);
 }
