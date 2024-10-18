@@ -34,12 +34,19 @@ std::string SubwordTokenzier::Decode(const std::vector<int>& token_idxs) {
 std::string SubwordTokenzier::RestoreSpace(const std::string& str) {
   // Replace "▁" in to space.
   std::string restored_str =
-      std::regex_replace(str, std::regex(SUBWORD_SPACE), " ");
-  // String strip space.
-  restored_str.erase(0, restored_str.find_first_not_of(" "));
-  restored_str.erase(restored_str.find_last_not_of(" ") + 1);
+      std::regex_replace(str, std::regex(SPM_DELIMITER), " ");
 
-  return restored_str;
+  return Rtrim(Ltrim(restored_str));
+}
+
+std::string SubwordTokenzier::Ltrim(const std::string& str) {
+  size_t start = str.find_first_not_of(WHITESPACE);
+  return (start == std::string::npos) ? "" : str.substr(start);
+}
+
+std::string SubwordTokenzier::Rtrim(const std::string& str) {
+  size_t end = str.find_last_not_of(WHITESPACE);
+  return (end == std::string::npos) ? "" : str.substr(0, end + 1);
 }
 
 }  // namespace decoding
