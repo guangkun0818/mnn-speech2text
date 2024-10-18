@@ -15,7 +15,7 @@
 namespace s2trt {
 namespace frontend {
 
-const float NORMALIZE_FACTOR = 1 / 32768;
+const float NORMALIZE_FACTOR = 1.0f / 32768;
 
 // Non streaming frontend pipeline.
 class Frontend {
