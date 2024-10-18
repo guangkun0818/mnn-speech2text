@@ -4,3 +4,4 @@ enable_testing()
 
 add_subdirectory(frontend)
 add_subdirectory(models)
+add_subdirectory(decoding)
