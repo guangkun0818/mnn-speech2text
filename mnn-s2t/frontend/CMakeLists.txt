@@ -25,7 +25,7 @@ target_link_libraries(kaldi-fbank-test frontend_shared gtest_main)
 add_test(
   NAME kaldi-fbank-test
   COMMAND kaldi-fbank-test
-  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
+  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/build)
 
 # Unittest of vad_session
 add_executable(frontend-pipeline-test frontend-pipeline-test.cc)
@@ -33,4 +33,4 @@ target_link_libraries(frontend-pipeline-test frontend_shared gtest_main)
 add_test(
   NAME frontend-pipeline-test
   COMMAND frontend-pipeline-test
-  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
+  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/build)

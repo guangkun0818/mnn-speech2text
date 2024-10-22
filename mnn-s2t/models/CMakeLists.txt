@@ -14,7 +14,7 @@ target_link_libraries(predictor-test predictor_shared gtest_main)
 add_test(
   NAME predictor-test
   COMMAND predictor-test
-  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
+  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/build)
 
 add_library(joiner_shared SHARED joiner.cc) # shared
 add_library(joiner_static STATIC joiner.cc) # static
@@ -28,4 +28,4 @@ target_link_libraries(joiner-test joiner_shared gtest_main)
 add_test(
   NAME joiner-test
   COMMAND joiner-test
-  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
+  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/build)
