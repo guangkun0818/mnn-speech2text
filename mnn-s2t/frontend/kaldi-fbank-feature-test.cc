@@ -23,7 +23,7 @@ class TestFeatureWindow : public ::testing::Test {
     opts_.frame_opts.snip_edges = false;  // Same setting in lhotes.
   }
 
-  std::string test_wav_ = "sample_data/wavs/2086-149220-0019.wav";
+  std::string test_wav_ = "../sample_data/wavs/2086-149220-0019.wav";
   std::shared_ptr<WavReader> wav_reader_;
   FbankOptions opts_;
 };
@@ -68,7 +68,7 @@ class TestKaldiFbankFeature : public ::testing::Test {
     wav_reader_ = std::make_shared<WavReader>();
   }
 
-  std::string test_wav_ = "sample_data/wavs/2086-149220-0019.wav";
+  std::string test_wav_ = "../sample_data/wavs/2086-149220-0019.wav";
   std::shared_ptr<FbankComputer> feat_computer_;
   std::shared_ptr<WavReader> wav_reader_;
   FbankOptions opts_;

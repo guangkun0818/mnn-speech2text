@@ -13,14 +13,15 @@ using namespace s2t;
 class TestRnntGreedyDecoding : public ::testing::Test {
  protected:
   void SetUp() {
-    const char* predictor = "sample_data/models/predictor_streaming_step.mnn";
+    const char* predictor =
+        "../sample_data/models/predictor_streaming_step.mnn";
     mnn_predictor_ = std::make_shared<models::MnnPredictor>(predictor, 5);
 
-    const char* joiner = "sample_data/models/joiner_streaming_step.mnn";
+    const char* joiner = "../sample_data/models/joiner_streaming_step.mnn";
     mnn_joiner_ = std::make_shared<models::MnnJoiner>(joiner);
 
-    tokenizer_ =
-        std::make_shared<decoding::SubwordTokenizer>("sample_data/units.txt");
+    tokenizer_ = std::make_shared<decoding::SubwordTokenizer>(
+        "../sample_data/units.txt");
     max_token_step_ = 1;
 
     greedy_decoding_ = std::make_shared<decoding::RnntGreedyDecoding>(

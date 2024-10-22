@@ -27,7 +27,7 @@ class TestNonStreamingFrontend : public ::testing::Test {
     frontend_ = std::make_shared<Frontend>(opts, true);
   }
 
-  std::string test_wav_ = "sample_data/wavs/2086-149220-0019.wav";
+  std::string test_wav_ = "../sample_data/wavs/2086-149220-0019.wav";
   std::shared_ptr<WavReader> wav_reader_;
   std::shared_ptr<Frontend> frontend_;
 };
@@ -70,7 +70,7 @@ class TestStreamingFrontend : public ::testing::Test {
 
   int32_t feat_dim_;
   int32_t chunk_size_;
-  std::string test_wav_ = "sample_data/wavs/2086-149220-0019.wav";
+  std::string test_wav_ = "../sample_data/wavs/2086-149220-0019.wav";
   std::shared_ptr<WavReader> wav_reader_;
   std::shared_ptr<Frontend> frontend_;
   std::shared_ptr<StreamingFrontend> streaming_frontend_;

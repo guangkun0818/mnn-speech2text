@@ -13,7 +13,7 @@ using namespace s2t::models;
 class TestMnnPredictor : public ::testing::Test {
  protected:
   void SetUp() {
-    const char* model = "sample_data/models/predictor_streaming_step.mnn";
+    const char* model = "../sample_data/models/predictor_streaming_step.mnn";
     mnn_predictor_ = std::make_shared<MnnPredictor>(model, 5);
   }
   std::shared_ptr<MnnPredictor> mnn_predictor_;
