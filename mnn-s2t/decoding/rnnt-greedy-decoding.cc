@@ -79,6 +79,7 @@ std::string RnntGreedyDecoding::Decode(mnn::Tensor* enc_out) {
       continue;
     }
   }
+  mnn::Tensor::destroy(enc_frame);  // Release enc frame tensor.
   return tokenizer_->Decode(decoded_result);
 }
 
