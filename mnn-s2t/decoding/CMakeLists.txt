@@ -17,7 +17,7 @@ target_link_libraries(tokenizer-test decoding_shared gtest_main)
 add_test(
   NAME tokenizer-test
   COMMAND tokenizer-test
-  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/..)
+  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
 
 # Unittest of rnnt-greedy-decoding.
 add_executable(rnnt-greedy-decoding-test rnnt-greedy-decoding-test.cc)
@@ -25,4 +25,4 @@ target_link_libraries(rnnt-greedy-decoding-test decoding_shared gtest_main)
 add_test(
   NAME rnnt-greedy-decoding-test
   COMMAND tokenizer-test
-  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/..)
+  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
