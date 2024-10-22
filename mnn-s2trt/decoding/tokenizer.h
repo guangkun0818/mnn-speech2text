@@ -19,11 +19,11 @@ namespace decoding {
 const char SPM_DELIMITER[] = "▁";
 const char WHITESPACE[] = " \n\r\t\f\v";
 
-class SubwordTokenzier {
+class SubwordTokenizer {
  public:
-  explicit SubwordTokenzier(const char* units_file);
+  explicit SubwordTokenizer(const char* units_file);
 
-  ~SubwordTokenzier(){};
+  ~SubwordTokenizer(){};
 
   // Decode token_idxs into strings.
   std::string Decode(const std::vector<int>& token_idxs);

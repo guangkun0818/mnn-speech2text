@@ -15,9 +15,9 @@ using namespace s2trt::decoding;
 class TestTokenizer : public ::testing::Test {
  protected:
   void SetUp() {
-    tokenizer_ = std::make_shared<SubwordTokenzier>("sample_data/units.txt");
+    tokenizer_ = std::make_shared<SubwordTokenizer>("sample_data/units.txt");
   }
-  std::shared_ptr<SubwordTokenzier> tokenizer_;
+  std::shared_ptr<SubwordTokenizer> tokenizer_;
 };
 
 TEST_F(TestTokenizer, TestTokenizerDecode) {

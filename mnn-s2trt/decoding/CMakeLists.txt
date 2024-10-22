@@ -1,9 +1,10 @@
 # Author: guangkun0818 Email: 609946862@qq.com Created on 2023.09.06
 enable_testing()
 
-# predictor lib
+# decoding lib
 add_library(decoding_shared SHARED rnnt-greedy-decoding.cc tokenizer.cc
 )# shared
+
 add_library(decoding_static STATIC rnnt-greedy-decoding.cc tokenizer.cc
 )# static
 

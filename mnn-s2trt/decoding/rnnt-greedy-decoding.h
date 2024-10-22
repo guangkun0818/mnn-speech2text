@@ -25,7 +25,7 @@ class RnntGreedyDecoding : public DecodingMethod {
   explicit RnntGreedyDecoding(
       const std::shared_ptr<models::MnnPredictor>& predictor,
       const std::shared_ptr<models::MnnJoiner>& joiner,
-      const std::shared_ptr<SubwordTokenzier>& tokenizer,
+      const std::shared_ptr<SubwordTokenizer>& tokenizer,
       size_t max_token_step);
 
   void Init() override;
@@ -39,7 +39,7 @@ class RnntGreedyDecoding : public DecodingMethod {
  private:
   std::shared_ptr<models::MnnPredictor> predictor_;
   std::shared_ptr<models::MnnJoiner> joiner_;
-  std::shared_ptr<SubwordTokenzier> tokenizer_;
+  std::shared_ptr<SubwordTokenizer> tokenizer_;
   size_t max_token_step_;
 };
 

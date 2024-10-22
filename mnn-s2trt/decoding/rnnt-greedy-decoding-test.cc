@@ -20,7 +20,7 @@ class TestRnntGreedyDecoding : public ::testing::Test {
     mnn_joiner_ = std::make_shared<models::MnnJoiner>(joiner);
 
     tokenizer_ =
-        std::make_shared<decoding::SubwordTokenzier>("sample_data/units.txt");
+        std::make_shared<decoding::SubwordTokenizer>("sample_data/units.txt");
     max_token_step_ = 1;
 
     greedy_decoding_ = std::make_shared<decoding::RnntGreedyDecoding>(
@@ -30,7 +30,7 @@ class TestRnntGreedyDecoding : public ::testing::Test {
   std::shared_ptr<decoding::RnntGreedyDecoding> greedy_decoding_;
   std::shared_ptr<models::MnnPredictor> mnn_predictor_;
   std::shared_ptr<models::MnnJoiner> mnn_joiner_;
-  std::shared_ptr<decoding::SubwordTokenzier> tokenizer_;
+  std::shared_ptr<decoding::SubwordTokenizer> tokenizer_;
   size_t max_token_step_;
 };
 

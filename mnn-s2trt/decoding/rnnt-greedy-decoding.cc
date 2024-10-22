@@ -13,7 +13,7 @@ namespace decoding {
 RnntGreedyDecoding::RnntGreedyDecoding(
     const std::shared_ptr<models::MnnPredictor>& predictor,
     const std::shared_ptr<models::MnnJoiner>& joiner,
-    const std::shared_ptr<SubwordTokenzier>& tokenizer, size_t max_token_step)
+    const std::shared_ptr<SubwordTokenizer>& tokenizer, size_t max_token_step)
     : predictor_(predictor),
       joiner_(joiner),
       tokenizer_(tokenizer),
