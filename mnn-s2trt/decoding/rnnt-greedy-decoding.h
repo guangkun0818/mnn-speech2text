@@ -28,6 +28,12 @@ class RnntGreedyDecoding : public DecodingMethod {
       const std::shared_ptr<SubwordTokenzier>& tokenizer,
       size_t max_token_step);
 
+  void Init() override;
+
+  inline bool IsBlank(int token) const;
+
+  int Argmax(const std::vector<std::vector<float>>& logits) const;
+
   std::string Decode(mnn::Tensor* enc_out) override;
 
  private:
