@@ -3,16 +3,16 @@
 // Created on 2023.10.17
 // Wrapped Joiner of transducer of mnn runtime.
 
-#ifndef _MNN_S2TRT_MODEL_JOINER_H_
-#define _MNN_S2TRT_MODEL_JOINER_H_
+#ifndef _MNN_S2T_MODEL_JOINER_H_
+#define _MNN_S2T_MODEL_JOINER_H_
 
 #include <memory>
 #include <vector>
 
 #include "glog/logging.h"
-#include "mnn-s2trt/common/common.h"
+#include "mnn-s2t/common/common.h"
 
-namespace s2trt {
+namespace s2t {
 namespace models {
 
 // Joiner of Transducer
@@ -41,6 +41,6 @@ class MnnJoiner {
 };
 
 }  // namespace models
-}  // namespace s2trt
+}  // namespace s2t
 
 #endif

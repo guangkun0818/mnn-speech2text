@@ -3,8 +3,8 @@
 // Created on 2023.09.06
 // This file is copied/modified from kaldi/src/feat/mel-computations.h
 
-#ifndef _MNN_S2TRT_MEL_COMPUTATIONS_H_
-#define _MNN_S2TRT_MEL_COMPUTATIONS_H_
+#ifndef _MNN_S2T_MEL_COMPUTATIONS_H_
+#define _MNN_S2T_MEL_COMPUTATIONS_H_
 
 #include <cmath>
 #include <cstdint>
@@ -13,9 +13,9 @@
 #include <utility>
 #include <vector>
 
-#include "mnn-s2trt/frontend/feature-window.h"
+#include "mnn-s2t/frontend/feature-window.h"
 
-namespace s2trt {
+namespace s2t {
 namespace frontend {
 
 struct FrameExtractionOptions;
@@ -167,6 +167,6 @@ class MelBanks {
 void ComputeLifterCoeffs(float Q, std::vector<float> *coeffs);
 
 }  // namespace frontend
-}  // namespace s2trt
+}  // namespace s2t
 
 #endif  // _MNN_S2TRT_MEL_COMPUTATIONS_H_

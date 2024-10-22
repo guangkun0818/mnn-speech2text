@@ -3,12 +3,12 @@
 // Created on 2023.10.16
 // Unittest of Predictor
 
-#include "mnn-s2trt/models/predictor.h"
+#include "mnn-s2t/models/predictor.h"
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
-using namespace s2trt::models;
+using namespace s2t::models;
 
 class TestMnnPredictor : public ::testing::Test {
  protected:

@@ -3,13 +3,13 @@
 // Created on 2023.09.10
 // Unittest of frontend pipeline impl
 
-#include "mnn-s2trt/frontend/frontend-pipeline.h"
+#include "mnn-s2t/frontend/frontend-pipeline.h"
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
-#include "mnn-s2trt/frontend/wav.h"
+#include "mnn-s2t/frontend/wav.h"
 
-using namespace s2trt::frontend;
+using namespace s2t::frontend;
 
 class TestNonStreamingFrontend : public ::testing::Test {
  protected:

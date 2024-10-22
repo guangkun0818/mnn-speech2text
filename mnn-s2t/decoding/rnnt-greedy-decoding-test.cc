@@ -3,12 +3,12 @@
 // Created on 2023.10.17
 // Unittest of Greedy decoding of Transducer.
 
-#include "mnn-s2trt/decoding/rnnt-greedy-decoding.h"
+#include "mnn-s2t/decoding/rnnt-greedy-decoding.h"
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
-using namespace s2trt;
+using namespace s2t;
 
 class TestRnntGreedyDecoding : public ::testing::Test {
  protected:

@@ -3,7 +3,7 @@
 // Created on 2023.09.06
 // This file is copied/modified from kaldi/src/feat/feature-fbank.cc
 
-#include "mnn-s2trt/frontend/kaldi-fbank-feature.h"
+#include "mnn-s2t/frontend/kaldi-fbank-feature.h"
 
 #include <algorithm>
 #include <limits>
@@ -11,10 +11,10 @@
 #include <vector>
 
 #include "glog/logging.h"
-#include "mnn-s2trt/frontend/feature-function.h"
-#include "mnn-s2trt/frontend/kaldi-math.h"
+#include "mnn-s2t/frontend/feature-function.h"
+#include "mnn-s2t/frontend/kaldi-math.h"
 
-namespace s2trt {
+namespace s2t {
 namespace frontend {
 
 std::ostream &operator<<(std::ostream &os, const FbankOptions &opts) {
@@ -100,4 +100,4 @@ void FbankComputer::Compute(float signal_raw_log_energy, float vtln_warp,
 }
 
 }  // namespace frontend
-}  // namespace s2trt
+}  // namespace s2t

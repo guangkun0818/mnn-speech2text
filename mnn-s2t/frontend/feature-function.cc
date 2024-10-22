@@ -3,12 +3,12 @@
 // Created on 2023.08.29
 // This file is copied/modified from kaldi/src/feat/feature-functions.cc
 
-#include "mnn-s2trt/frontend/feature-function.h"
+#include "mnn-s2t/frontend/feature-function.h"
 
 #include <cstdint>
 #include <vector>
 
-namespace s2trt {
+namespace s2t {
 namespace frontend {
 
 void ComputePowerSpectrum(std::vector<float> *complex_fft) {
@@ -33,4 +33,4 @@ void ComputePowerSpectrum(std::vector<float> *complex_fft) {
 }
 
 }  // namespace frontend
-}  // namespace s2trt
+}  // namespace s2t

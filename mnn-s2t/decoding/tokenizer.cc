@@ -3,11 +3,11 @@
 // Created on 2023.10.17
 // Subword Tokenizer.
 
-#include "mnn-s2trt/decoding/tokenizer.h"
+#include "mnn-s2t/decoding/tokenizer.h"
 
 #include <regex>
 
-namespace s2trt {
+namespace s2t {
 namespace decoding {
 
 SubwordTokenizer::SubwordTokenizer(const char* units_file) {
@@ -50,4 +50,4 @@ std::string SubwordTokenizer::Rtrim(const std::string& str) {
 }
 
 }  // namespace decoding
-}  // namespace s2trt
+}  // namespace s2t

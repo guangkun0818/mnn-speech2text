@@ -350,7 +350,7 @@ Appendix :
   }
 #endif /* USE_CDFT_WINTHREADS */
 
-namespace s2trt {
+namespace s2t {
 namespace frontend {
 
 static void makeipt(int nw, int *ip) {
@@ -2842,4 +2842,4 @@ void rdft(int n, int isgn, double *a, int *ip, double *w) {
 }
 
 }  // namespace frontend
-}  // namespace s2trt
+}  // namespace s2t

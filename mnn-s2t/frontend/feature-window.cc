@@ -3,7 +3,7 @@
 // Created on 2023.08.29
 // Feature window impl.
 
-#include "mnn-s2trt/frontend/feature-window.h"
+#include "mnn-s2t/frontend/feature-window.h"
 
 #include <algorithm>
 #include <cmath>
@@ -11,9 +11,9 @@
 #include <limits>
 #include <vector>
 
-#include "mnn-s2trt/frontend/kaldi-math.h"
+#include "mnn-s2t/frontend/kaldi-math.h"
 
-namespace s2trt {
+namespace s2t {
 namespace frontend {
 
 std::ostream &operator<<(std::ostream &os, const FrameExtractionOptions &opts) {
@@ -255,4 +255,4 @@ void ProcessWindow(const FrameExtractionOptions &opts,
 }
 
 }  // namespace frontend
-}  // namespace s2trt
+}  // namespace s2t

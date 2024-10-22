@@ -3,11 +3,11 @@
 // Created on 2023.10.17
 // Greedy decoding of Transducer.
 
-#include "mnn-s2trt/decoding/rnnt-greedy-decoding.h"
+#include "mnn-s2t/decoding/rnnt-greedy-decoding.h"
 
 #include <algorithm>
 
-namespace s2trt {
+namespace s2t {
 namespace decoding {
 
 RnntGreedyDecoding::RnntGreedyDecoding(
@@ -83,4 +83,4 @@ std::string RnntGreedyDecoding::Decode(mnn::Tensor* enc_out) {
 }
 
 }  // namespace decoding
-}  // namespace s2trt
+}  // namespace s2t

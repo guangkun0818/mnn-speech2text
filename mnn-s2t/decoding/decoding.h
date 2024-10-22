@@ -3,14 +3,14 @@
 // Created on 2023.10.17
 // Greedy decoding of Transducer.
 
-#ifndef _MNN_S2TRT_DECODING_DECODING_H_
-#define _MNN_S2TRT_DECODING_DECODING_H_
+#ifndef _MNN_S2T_DECODING_DECODING_H_
+#define _MNN_S2T_DECODING_DECODING_H_
 
 #include <string>
 
-#include "mnn-s2trt/common/common.h"
+#include "mnn-s2t/common/common.h"
 
-namespace s2trt {
+namespace s2t {
 namespace decoding {
 
 class DecodingMethod {
@@ -21,6 +21,6 @@ class DecodingMethod {
 };
 
 }  // namespace decoding
-}  // namespace s2trt
+}  // namespace s2t
 
 #endif

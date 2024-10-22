@@ -3,8 +3,8 @@
 // Created on 2023.09.06
 // Wav IO, 16k pcm 16bit wav.
 
-#ifndef _MNN_S2TRT_FRONTEND_WAV_H_
-#define _MNN_S2TRT_FRONTEND_WAV_H_
+#ifndef _MNN_S2T_FRONTEND_WAV_H_
+#define _MNN_S2T_FRONTEND_WAV_H_
 
 #include <assert.h>
 #include <stdint.h>
@@ -16,7 +16,7 @@
 
 #include "glog/logging.h"
 
-namespace s2trt {
+namespace s2t {
 namespace frontend {
 
 struct WavHeader {
@@ -226,6 +226,6 @@ class StreamWavWriter {
 };
 
 }  // namespace frontend
-}  // namespace s2trt
+}  // namespace s2t
 
 #endif  // _MNN_S2TRT_FRONTEND_WAV_H_

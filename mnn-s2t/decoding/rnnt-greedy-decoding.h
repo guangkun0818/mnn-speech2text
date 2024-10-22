@@ -3,8 +3,8 @@
 // Created on 2023.10.17
 // Greedy decoding of Transducer.
 
-#ifndef _MNN_S2TRT_DECODING_RNNT_GREEDY_DECODING_H_
-#define _MNN_S2TRT_DECODING_RNNT_GREEDY_DECODING_H_
+#ifndef _MNN_S2T_DECODING_RNNT_GREEDY_DECODING_H_
+#define _MNN_S2T_DECODING_RNNT_GREEDY_DECODING_H_
 
 #include <algorithm>
 #include <memory>
@@ -12,12 +12,12 @@
 #include <vector>
 
 #include "glog/logging.h"
-#include "mnn-s2trt/decoding/decoding.h"
-#include "mnn-s2trt/decoding/tokenizer.h"
-#include "mnn-s2trt/models/joiner.h"
-#include "mnn-s2trt/models/predictor.h"
+#include "mnn-s2t/decoding/decoding.h"
+#include "mnn-s2t/decoding/tokenizer.h"
+#include "mnn-s2t/models/joiner.h"
+#include "mnn-s2t/models/predictor.h"
 
-namespace s2trt {
+namespace s2t {
 namespace decoding {
 
 class RnntGreedyDecoding : public DecodingMethod {
@@ -44,6 +44,6 @@ class RnntGreedyDecoding : public DecodingMethod {
 };
 
 }  // namespace decoding
-}  // namespace s2trt
+}  // namespace s2t
 
 #endif

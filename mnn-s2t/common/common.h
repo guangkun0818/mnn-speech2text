@@ -8,10 +8,10 @@
 #include "MNN/Interpreter.hpp"
 #include "MNN/MNNForwardType.h"
 
-namespace s2trt {
+namespace s2t {
 
 namespace mnn = MNN;  // alias of MNN.
 
-}  // namespace s2trt
+}  // namespace s2t
 
 #endif

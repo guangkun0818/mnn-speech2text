@@ -3,9 +3,9 @@
 // Created on 2023.09.30
 // Wrapped Predictor of transducer of mnn runtime.
 
-#include "mnn-s2trt/models/predictor.h"
+#include "mnn-s2t/models/predictor.h"
 
-namespace s2trt {
+namespace s2t {
 namespace models {
 
 MnnPredictor::MnnPredictor(const char* predictor_model, size_t context_size)
@@ -68,4 +68,4 @@ mnn::Tensor* MnnPredictor::GetPredOut() {
 }
 
 }  // namespace models
-}  // namespace s2trt
+}  // namespace s2t

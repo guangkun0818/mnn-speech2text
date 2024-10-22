@@ -4,7 +4,7 @@
 
 // This file is an excerpt from kaldi/src/base/kaldi-math.cc
 
-#include "mnn-s2trt/frontend/kaldi-math.h"
+#include "mnn-s2t/frontend/kaldi-math.h"
 
 #if defined(_POSIX_THREAD_SAFE_FUNCTIONS)
 #include <mutex>  // NOLINT
@@ -12,7 +12,7 @@
 
 #include <cmath>
 
-namespace s2trt {
+namespace s2t {
 namespace frontend {
 
 int Rand(struct RandomState *state) {
@@ -50,4 +50,4 @@ void Sqrt(float *in_out, int32_t n) {
 }
 
 }  // namespace frontend
-}  // namespace s2trt
+}  // namespace s2t

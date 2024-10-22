@@ -3,15 +3,15 @@
 // Created on 2023.09.06
 // Unittest of kaldi-fbank-feature
 
-#include "mnn-s2trt/frontend/kaldi-fbank-feature.h"
+#include "mnn-s2t/frontend/kaldi-fbank-feature.h"
 
 #include <memory>
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
-#include "mnn-s2trt/frontend/wav.h"
+#include "mnn-s2t/frontend/wav.h"
 
-using namespace s2trt::frontend;
+using namespace s2t::frontend;
 
 class TestFeatureWindow : public ::testing::Test {
  protected:

@@ -3,13 +3,13 @@
 // Created on 2023.08.29
 // Real discrete Fourier transform impl.
 
-#ifndef _MNN_S2TRT_RFFT_H_
-#define _MNN_S2TRT_RFFT_H_
+#ifndef _MNN_S2T_RFFT_H_
+#define _MNN_S2T_RFFT_H_
 
 #include <cstdint>
 #include <memory>
 
-namespace s2trt {
+namespace s2t {
 namespace frontend {
 
 // n-point Real discrete Fourier transform
@@ -42,6 +42,6 @@ class Rfft {
 };
 
 }  // namespace frontend
-}  // namespace s2trt
+}  // namespace s2t
 
 #endif

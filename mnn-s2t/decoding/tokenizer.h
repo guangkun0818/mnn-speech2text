@@ -3,8 +3,8 @@
 // Created on 2023.10.17
 // Subword Tokenizer.
 
-#ifndef _MNN_S2TRT_DECODING_TOKENIZER_H_
-#define _MNN_S2TRT_DECODING_TOKENIZER_H_
+#ifndef _MNN_S2T_DECODING_TOKENIZER_H_
+#define _MNN_S2T_DECODING_TOKENIZER_H_
 
 #include <fstream>
 #include <string>
@@ -13,7 +13,7 @@
 
 #include "glog/logging.h"
 
-namespace s2trt {
+namespace s2t {
 namespace decoding {
 
 const char SPM_DELIMITER[] = "▁";
@@ -40,6 +40,6 @@ class SubwordTokenizer {
 };
 
 }  // namespace decoding
-}  // namespace s2trt
+}  // namespace s2t
 
 #endif

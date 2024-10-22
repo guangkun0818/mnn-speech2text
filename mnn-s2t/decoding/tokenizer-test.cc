@@ -3,14 +3,14 @@
 // Created on 2023.10.17
 // Unittest of Subword Tokenizer.
 
-#include "mnn-s2trt/decoding/tokenizer.h"
+#include "mnn-s2t/decoding/tokenizer.h"
 
 #include <memory>
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
-using namespace s2trt::decoding;
+using namespace s2t::decoding;
 
 class TestTokenizer : public ::testing::Test {
  protected:

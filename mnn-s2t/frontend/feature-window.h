@@ -13,7 +13,7 @@
 
 #include "glog/logging.h"
 
-namespace s2trt {
+namespace s2t {
 namespace frontend {
 
 inline int32_t RoundUpToNearestPowerOfTwo(int32_t n) {
@@ -174,6 +174,6 @@ void ProcessWindow(const FrameExtractionOptions &opts,
 float InnerProduct(const float *a, const float *b, int32_t n);
 
 }  // namespace frontend
-}  // namespace s2trt
+}  // namespace s2t
 
 #endif  // _MNN_S2TRT_FEATURE_WINDOW_H_

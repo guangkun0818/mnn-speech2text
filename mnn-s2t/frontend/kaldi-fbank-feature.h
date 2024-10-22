@@ -12,11 +12,11 @@
 #include <string>
 #include <vector>
 
-#include "mnn-s2trt/frontend/feature-window.h"
-#include "mnn-s2trt/frontend/mel-computations.h"
-#include "mnn-s2trt/frontend/rfft.h"
+#include "mnn-s2t/frontend/feature-window.h"
+#include "mnn-s2t/frontend/mel-computations.h"
+#include "mnn-s2t/frontend/rfft.h"
 
-namespace s2trt {
+namespace s2t {
 namespace frontend {
 
 struct FbankOptions {
@@ -118,6 +118,6 @@ class FbankComputer {
 };
 
 }  // namespace frontend
-}  // namespace s2trt
+}  // namespace s2t
 
 #endif  // _MNN_S2TRT_FEATURE_FBANK_H_

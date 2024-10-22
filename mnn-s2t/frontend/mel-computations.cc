@@ -3,7 +3,7 @@
 // Created on 2023.09.06
 // This file is copied/modified from kaldi/src/feat/mel-computations.cc
 
-#include "mnn-s2trt/frontend//mel-computations.h"
+#include "mnn-s2t/frontend//mel-computations.h"
 
 #include <stdio.h>
 
@@ -12,10 +12,10 @@
 #include <vector>
 
 #include "glog/logging.h"
-#include "mnn-s2trt/frontend/feature-window.h"
-#include "mnn-s2trt/frontend/kaldi-math.h"
+#include "mnn-s2t/frontend/feature-window.h"
+#include "mnn-s2t/frontend/kaldi-math.h"
 
-namespace s2trt {
+namespace s2t {
 namespace frontend {
 
 std::ostream &operator<<(std::ostream &os, const MelBanksOptions &opts) {
@@ -404,4 +404,4 @@ void ComputeLifterCoeffs(float Q, std::vector<float> *coeffs) {
 }
 
 }  // namespace frontend
-}  // namespace s2trt
+}  // namespace s2t

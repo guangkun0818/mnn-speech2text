@@ -4,8 +4,8 @@
 
 // This file is an excerpt from kaldi/src/base/kaldi-math.h
 
-#ifndef _MNN_S2TRT_KALDI_MATH_H_
-#define _MNN_S2TRT_KALDI_MATH_H_
+#ifndef _MNN_S2T_KALDI_MATH_H_
+#define _MNN_S2T_KALDI_MATH_H_
 
 #include <cmath>  // logf, sqrtf, cosf
 #include <cstdint>
@@ -23,7 +23,7 @@
 #define M_SQRT2 1.4142135623730950488016887
 #endif
 
-namespace s2trt {
+namespace s2t {
 namespace frontend {
 
 inline float Log(float x) { return logf(x); }
@@ -50,6 +50,6 @@ inline float RandGauss(struct RandomState *state = NULL) {
 void Sqrt(float *in_out, int32_t n);
 
 }  // namespace frontend
-}  // namespace s2trt
+}  // namespace s2t
 
-#endif  // _MNN_S2TRT_KALDI_MATH_H_
+#endif  // _MNN_S2T_KALDI_MATH_H_

@@ -23,4 +23,4 @@ include(googletest)
 
 include_directories(${PROJECT_SOURCE_DIR})
 
-add_subdirectory(mnn-s2trt)
+add_subdirectory(mnn-s2t)

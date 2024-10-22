@@ -8,7 +8,7 @@
 
 #include <vector>
 
-namespace s2trt {
+namespace s2t {
 namespace frontend {
 
 // ComputePowerSpectrum converts a complex FFT (as produced by the FFT
@@ -22,6 +22,6 @@ namespace frontend {
 void ComputePowerSpectrum(std::vector<float> *complex_fft);
 
 }  // namespace frontend
-}  // namespace s2trt
+}  // namespace s2t
 
 #endif  // _MNN_S2TRT_FEATURE_FUNCTIONS_H_

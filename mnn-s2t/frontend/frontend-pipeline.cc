@@ -3,11 +3,11 @@
 // Created on 2023.09.10
 // Frontend pipeline impl of speech2text session.
 
-#include "mnn-s2trt/frontend/frontend-pipeline.h"
+#include "mnn-s2t/frontend/frontend-pipeline.h"
 
 #include "glog/logging.h"
 
-namespace s2trt {
+namespace s2t {
 namespace frontend {
 
 Frontend::Frontend(const FbankOptions& opts, const bool pcm_normalize)
@@ -220,4 +220,4 @@ void StreamingFrontend::EmitFeats(std::vector<std::vector<float>>& feats,
 }
 
 }  // namespace frontend
-}  // namespace s2trt
+}  // namespace s2t

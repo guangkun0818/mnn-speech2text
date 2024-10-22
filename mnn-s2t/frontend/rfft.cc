@@ -3,7 +3,7 @@
 // Created on 2023.08.29
 // Real discrete Fourier transform impl.
 
-#include "mnn-s2trt/frontend/rfft.h"
+#include "mnn-s2t/frontend/rfft.h"
 
 #include <algorithm>
 #include <cmath>
@@ -11,7 +11,7 @@
 
 #include "glog/logging.h"
 
-namespace s2trt {
+namespace s2t {
 namespace frontend {
 
 // see fftsg.cc
@@ -50,4 +50,4 @@ void Rfft::Compute(float *in_out) { impl_->Compute(in_out); }
 void Rfft::Compute(double *in_out) { impl_->Compute(in_out); }
 
 }  // namespace frontend
-}  // namespace s2trt
+}  // namespace s2t

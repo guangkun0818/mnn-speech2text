@@ -7,7 +7,7 @@
 # Code format script
 
 # C++ runtime clang-format 16.0.0
-find ./mnn-s2trt/ -iname "*.h" -o \
+find ./mnn-s2t/ -iname "*.h" -o \
     -iname "*.cc" -o -iname "*.c" \
     -o -iname "*.cpp" | xargs clang-format -style=Google -i
 

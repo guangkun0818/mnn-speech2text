@@ -3,9 +3,9 @@
 // Created on 2023.10.17
 // Wrapped Joiner of transducer of mnn runtime.
 
-#include "mnn-s2trt/models/joiner.h"
+#include "mnn-s2t/models/joiner.h"
 
-namespace s2trt {
+namespace s2t {
 namespace models {
 
 MnnJoiner::MnnJoiner(const char* joiner_model) {
@@ -62,4 +62,4 @@ std::vector<std::vector<float>> MnnJoiner::GetJoinerOut() const {
 }
 
 }  // namespace models
-}  // namespace s2trt
+}  // namespace s2t

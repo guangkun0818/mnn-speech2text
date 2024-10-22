@@ -3,12 +3,12 @@
 // Created on 2023.10.17
 // Unittest of wrapped Joiner.
 
-#include "mnn-s2trt/models/joiner.h"
+#include "mnn-s2t/models/joiner.h"
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
-using namespace s2trt;
+using namespace s2t;
 
 class TestMnnJoiner : public ::testing::Test {
  protected:
