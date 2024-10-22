@@ -8,7 +8,7 @@ add_library(predictor_static STATIC predictor.cc) # static
 target_link_libraries(predictor_shared glog MNN)
 target_link_libraries(predictor_static glog MNN)
 
-# Unittest of kaldi-fbank-feature.
+# Unittest of predictor.
 add_executable(predictor-test predictor-test.cc)
 target_link_libraries(predictor-test predictor_shared gtest_main)
 add_test(
@@ -22,7 +22,7 @@ add_library(joiner_static STATIC joiner.cc) # static
 target_link_libraries(joiner_shared glog MNN)
 target_link_libraries(joiner_static glog MNN)
 
-# Unittest of kaldi-fbank-feature.
+# Unittest of joiner.
 add_executable(joiner-test joiner-test.cc)
 target_link_libraries(joiner-test joiner_shared gtest_main)
 add_test(
