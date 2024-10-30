@@ -16,6 +16,7 @@ add_test(
   COMMAND predictor-test
   WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/build)
 
+# Joiner lib
 add_library(joiner_shared SHARED joiner.cc) # shared
 add_library(joiner_static STATIC joiner.cc) # static
 
@@ -28,4 +29,21 @@ target_link_libraries(joiner-test joiner_shared gtest_main)
 add_test(
   NAME joiner-test
   COMMAND joiner-test
+  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/build)
+
+# Encoder lib
+set(encoder_src zipformer.cc)
+
+add_library(encoder_shared SHARED ${encoder_src}) # shared
+add_library(encoder_static STATIC ${encoder_src}) # static
+
+target_link_libraries(encoder_shared glog MNN)
+target_link_libraries(encoder_static glog MNN)
+
+# Unittest of joiner.
+add_executable(zipformer-test zipformer-test.cc)
+target_link_libraries(zipformer-test encoder_shared frontend_shared gtest_main)
+add_test(
+  NAME zipformer-test
+  COMMAND zipformer-test
   WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/build)
