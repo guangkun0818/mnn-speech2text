@@ -18,8 +18,9 @@ Frontend::Frontend(const FbankOptions& opts, const bool pcm_normalize)
   CHECK_EQ(opts_.mel_opts.low_freq, 20.0f);     // Default setting in lhotes
   CHECK_EQ(opts_.mel_opts.high_freq, -400.0f);  // Default setting in lhotes
   CHECK_EQ(opts_.frame_opts.dither, 0.0f);
-  CHECK_EQ(opts_.frame_opts.snip_edges, false);  // Same setting in lhotes.
-  CHECK_EQ(opts_.energy_floor, 1e-10f);          // EPSILON = 1e-10 in lhotes.
+  CHECK_EQ(opts_.frame_opts.snip_edges,
+           true);  // Different with default setting of lhotes.
+  CHECK_EQ(opts_.energy_floor, 1e-10f);  // EPSILON = 1e-10 in lhotes.
 
   window_function_ = FeatureWindowFunction(opts_.frame_opts);
   feat_computer_ = std::make_shared<FbankComputer>(opts_);
@@ -72,6 +73,7 @@ StreamingFrontend::StreamingFrontend(const FbankOptions& opts,
       frame_length_ms = 25.0f
       snip_edges = false
 
+    If snip_edges = false (As in default setting of lhotes):
      first frame:  |------25ms-------|
                    |-10ms-|---15ms---|
 
@@ -82,6 +84,17 @@ StreamingFrontend::StreamingFrontend(const FbankOptions& opts,
      third frame:  |-10ms-|-10ms-|------25ms------|
                    |-10ms-|-10ms-|5ms|
         residual pcm 5ms >= frame_shift / 2, enable padding.
+
+    Else If snip_edges = true:
+      Framing strategy:
+        bound--------------------bound
+          |----25ms----|-10ms-|    |
+          |      |----25ms----|    |
+          |             |----25ms--|--| <- discarded.
+       --------------------------------
+        This offer straight-forward causal streaming by only discard right side
+        of pcms and and the first frame begins at sample zero, Like above The
+    last frame will be discard when frame shift beyond the bound of given pcms.
   */
 
   // pcm_chunk_size_ = (25ms + (feat_chunk_size - 1) * 10ms) * 16000
@@ -103,7 +116,7 @@ void StreamingFrontend::Reset() {
   last_pcm_cache_.clear();
 }
 
-bool StreamingFrontend::IsReady() const {
+bool StreamingFrontend::IsReadyForFullChunk() const {
   return num_pending_pcms_ + last_pcm_cache_.size() > pcm_chunk_size_;
 }
 
@@ -137,11 +150,11 @@ void StreamingFrontend::PreparePcms() {
                          pcms_ready_.end() - pcm_cache_size_,
                          pcms_ready_.end());
   CHECK_EQ(last_pcm_cache_.size(), pcm_cache_size_);
-  CHECK_EQ(pcms_ready_.size(), pcm_chunk_size_);
+  CHECK_LE(pcms_ready_.size(), pcm_chunk_size_);
 }
 
 void StreamingFrontend::ComsumePendingPcms(size_t pcm_required_size) {
-  while (pcm_required_size > 0) {
+  while (pcm_required_size > 0 && num_pending_pcms_ > 0) {
     if ((pcms_pending_.front().size() - start_offset_of_front_) <=
         pcm_required_size) {
       // Comsume the front slice of pcm if the front slice of pending pcm cannot
@@ -179,22 +192,24 @@ void StreamingFrontend::ComsumePendingPcms(size_t pcm_required_size) {
     }
   }
 
-  CHECK_EQ(pcm_required_size, 0);
+  CHECK(pcm_required_size == 0 || num_pending_pcms_ == 0);
+  LOG_IF(INFO, num_pending_pcms_ == 0) << "Fully consumed pending pcms.";
 }
 
 void StreamingFrontend::EmitFeats(std::vector<std::vector<float>>& feats,
                                   bool is_last) {
   feats.clear();
-  if (not this->IsReady()) {
-    LOG(FATAL) << "Pending pcm is not enought to emit feat chunks.";
-  }
   this->PreparePcms();
 
   auto num_frames = NumFrames(pcms_ready_.size(), opts_.frame_opts);
   // Last 2 frames should be discarded since it involved with padding
   // with given setting frame_shift_ms = 10.0f / frame_length_ms = 25.0f
   // if not the last chunk.
-  num_frames = is_last ? num_frames : num_frames - 2;
+  LOG_IF(WARNING, num_pending_pcms_ > 0 && is_last)
+      << "Accpeted Pcms has not been fully consumed, please check "
+         "IsReadyForFullChunk() first.";
+  LOG_IF(INFO, is_last) << "Num of valid frames in last chunk is " << num_frames
+                        << ".";
 
   CHECK_GT(num_frames, 0);  // should be larger than 0
 

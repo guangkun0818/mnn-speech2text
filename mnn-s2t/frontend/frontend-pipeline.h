@@ -67,7 +67,7 @@ class StreamingFrontend : public Frontend {
   void Reset();
 
   // Specify whether pending pcm is enough to emit feats chunk.
-  bool IsReady() const;
+  bool IsReadyForFullChunk() const;
 
   // Interface to accept flushed in pcms.
   virtual void AcceptPcms(const std::vector<float>& pcms);

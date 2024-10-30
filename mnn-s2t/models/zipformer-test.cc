@@ -23,8 +23,9 @@ class TestMnnZipformer : public ::testing::Test {
     opts.mel_opts.high_freq = -400.0f;  // Default setting in lhotes
 
     opts.frame_opts.dither = 0.0f;
-    opts.frame_opts.snip_edges = false;  // Same setting in lhotes.
-    opts.energy_floor = 1e-10f;          // EPSILON = 1e-10 in lhotes.
+    opts.frame_opts.snip_edges =
+        true;                    // Different with default setting of lhotes.
+    opts.energy_floor = 1e-10f;  // EPSILON = 1e-10 in lhotes.
     frontend_ = std::make_shared<frontend::StreamingFrontend>(
         opts, /*chunk_size=*/77, /*pcm_normalize=*/true);
 

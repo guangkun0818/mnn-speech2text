@@ -22,8 +22,9 @@ class TestNonStreamingFrontend : public ::testing::Test {
     opts.mel_opts.high_freq = -400.0f;  // Default setting in lhotes
 
     opts.frame_opts.dither = 0.0f;
-    opts.frame_opts.snip_edges = false;  // Same setting in lhotes.
-    opts.energy_floor = 1e-10f;          // EPSILON = 1e-10 in lhotes.
+    opts.frame_opts.snip_edges =
+        true;                    // Different with default setting of lhotes.
+    opts.energy_floor = 1e-10f;  // EPSILON = 1e-10 in lhotes.
     frontend_ = std::make_shared<Frontend>(opts, true);
   }
 
@@ -41,7 +42,7 @@ TEST_F(TestNonStreamingFrontend, TestPipelineProcess) {
   std::vector<std::vector<float>> feats;
   frontend_->EmitFeats(feats);
 
-  ASSERT_EQ(feats.size(), 1318);           // Num of frames.
+  ASSERT_EQ(feats.size(), 1316);           // Num of frames.
   ASSERT_EQ((*feats.begin()).size(), 80);  // Num of feat_dims.
 }
 
@@ -58,8 +59,9 @@ class TestStreamingFrontend : public ::testing::Test {
     opts.mel_opts.high_freq = -400.0f;   // Default setting in lhotes
 
     opts.frame_opts.dither = 0.0f;
-    opts.frame_opts.snip_edges = false;  // Same setting in lhotes.
-    opts.energy_floor = 1e-10f;          // EPSILON = 1e-10 in lhotes.
+    opts.frame_opts.snip_edges =
+        true;                    // Different with default setting of lhotes.
+    opts.energy_floor = 1e-10f;  // EPSILON = 1e-10 in lhotes.
     feat_dim_ = opts.mel_opts.num_bins;
 
     chunk_size_ = 77;
@@ -76,7 +78,7 @@ class TestStreamingFrontend : public ::testing::Test {
   std::shared_ptr<StreamingFrontend> streaming_frontend_;
 };
 
-TEST_F(TestStreamingFrontend, TestPipelineProcess) {
+TEST_F(TestStreamingFrontend, TestPipelineProcessOneChunk) {
   wav_reader_->Open(test_wav_);
   std::vector<float> pcm(wav_reader_->data(),
                          wav_reader_->data() + wav_reader_->num_samples());
@@ -89,9 +91,7 @@ TEST_F(TestStreamingFrontend, TestPipelineProcess) {
   ASSERT_EQ((*feats.begin()).size(), feat_dim_);  // Num of feat_dims.
 
   streaming_frontend_->EmitFeats(feats, true);
-
-  ASSERT_EQ(feats.size(),
-            chunk_size_ + 2);  // if is_last, should be chunk_size + 2;
+  ASSERT_EQ(feats.size(), chunk_size_);           // Num of frames.
   ASSERT_EQ((*feats.begin()).size(), feat_dim_);  // Num of feat_dims.
 }
 
@@ -107,16 +107,31 @@ TEST_F(TestStreamingFrontend, TestPrecisionCheck) {
   streaming_frontend_->AcceptPcms(pcm);
   std::vector<std::vector<float>> feats_chunk;
 
-  // Precision check for first 4 chunk.
-  for (int chunk_id = 0; chunk_id < 4; chunk_id++) {
+  // Precision check with Non-streaming frontend
+  int chunk_id = 0;
+  int num_frames = 0;
+  while (streaming_frontend_->IsReadyForFullChunk()) {
     streaming_frontend_->EmitFeats(feats_chunk);
+    num_frames += feats_chunk.size();
 
     // Presicion check over all elems.
     for (int frame_id = 0; frame_id < chunk_size_; frame_id++) {
       for (int j = 0; j < feat_dim_; j++) {
-        ASSERT_FLOAT_EQ(offline_feats[chunk_id * chunk_size_ + chunk_id][j],
-                        feats_chunk[chunk_id][j]);
+        ASSERT_FLOAT_EQ(offline_feats[chunk_id * chunk_size_ + frame_id][j],
+                        feats_chunk[frame_id][j]);
       }
+    }
+    chunk_id++;
+  }
+
+  // Process last chunk.
+  streaming_frontend_->EmitFeats(feats_chunk, true);
+  num_frames += feats_chunk.size();
+  ASSERT_EQ(num_frames, offline_feats.size());
+  for (int frame_id = 0; frame_id < feats_chunk.size(); frame_id++) {
+    for (int j = 0; j < feat_dim_; j++) {
+      ASSERT_FLOAT_EQ(offline_feats[chunk_id * chunk_size_ + frame_id][j],
+                      feats_chunk[frame_id][j]);
     }
   }
 }
