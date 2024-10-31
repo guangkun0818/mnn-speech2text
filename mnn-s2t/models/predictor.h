@@ -26,6 +26,8 @@ class MnnPredictor {
 
   void Init(const int beam_size);
 
+  void Reset();
+
   void StreamingStep(const std::vector<int>& pred_in);
 
   mnn::Tensor* GetPredOut();
