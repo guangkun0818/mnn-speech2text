@@ -234,5 +234,20 @@ void StreamingFrontend::EmitFeats(std::vector<std::vector<float>>& feats,
   }
 }
 
+void StreamingFrontend::PadIntoFullChunk(
+    std::vector<std::vector<float>>& feats) {
+  if (feats.size() == this->feat_chunk_size_) {
+    LOG(INFO) << "Input feats is full chunk, override padding.";
+    return;
+  }
+  size_t padding_len = this->feat_chunk_size_ - feats.size();
+  CHECK_GT(padding_len, 0);
+  auto padding = std::vector<std::vector<float>>(
+      padding_len, std::vector<float>(this->feat_computer_->Dim(), 0.0));
+
+  feats.insert(feats.end(), padding.begin(), padding.end());
+  CHECK_EQ(feats.size(), this->feat_chunk_size_);
+}
+
 }  // namespace frontend
 }  // namespace s2t

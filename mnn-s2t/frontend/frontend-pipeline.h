@@ -76,6 +76,10 @@ class StreamingFrontend : public Frontend {
   virtual void EmitFeats(std::vector<std::vector<float>>& feats,
                          bool is_last = false);
 
+  // Pad partial chunk feats into full chunk with 0.0, use on last chunk
+  // of streaming pipeline since it is usually is not full chunk.
+  void PadIntoFullChunk(std::vector<std::vector<float>>& feats);
+
  private:
   // Prepare pcm_to_extract from pending pcm.
   void PreparePcms();
