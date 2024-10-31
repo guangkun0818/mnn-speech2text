@@ -29,6 +29,8 @@ class MnnZipformer : public MnnEncoder {
 
   void Init(const int num_frames) override;
 
+  void Reset() override;
+
   void StreamingStep(const std::vector<std::vector<float>>& feats) override;
 
   void Inference(const std::vector<std::vector<float>>& feats) override;

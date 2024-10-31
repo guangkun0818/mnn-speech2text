@@ -18,18 +18,17 @@ MnnZipformer::MnnZipformer(const char* zipformer_model, const int feat_dim,
   this->model_ = std::shared_ptr<mnn::Interpreter>(
       mnn::Interpreter::createFromFile(zipformer_model));
   CHECK_NE(this->model_, nullptr);
-
-  this->session_ = model_->createSession(config_);
-  CHECK_NE(this->session_, nullptr);
+  this->session_ = nullptr;
 }
 
-MnnZipformer::~MnnZipformer() {
-  CHECK(this->model_->releaseSession(this->session_));
-}
+MnnZipformer::~MnnZipformer() { this->Reset(); }
 
 const int MnnZipformer::ChunkSize() const { return this->chunk_size_; }
 
 void MnnZipformer::Init(const int num_frames) {
+  this->session_ = model_->createSession(config_);
+  CHECK_NE(this->session_, nullptr);
+
   // Input feats shape: {1, num_frames, feat_dim}
   std::vector<int> feat_shape = {1, /*num_frames=*/chunk_size_,
                                  /*feat_dim=*/feat_dim_};
@@ -42,6 +41,13 @@ void MnnZipformer::Init(const int num_frames) {
 
   // Resize session with input feat shape.
   this->model_->resizeSession(this->session_);
+}
+
+void MnnZipformer::Reset() {
+  if (this->session_) {
+    CHECK(this->model_->releaseSession(this->session_));
+    this->session_ = nullptr;
+  }
 }
 
 void MnnZipformer::StreamingStep(const std::vector<std::vector<float>>& feats) {

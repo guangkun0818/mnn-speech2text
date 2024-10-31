@@ -19,6 +19,7 @@ class MnnEncoder {
  public:
   virtual ~MnnEncoder() {}
   virtual void Init(const int num_frames) = 0;
+  virtual void Reset() = 0;
   virtual void Inference(const std::vector<std::vector<float>>& feats) = 0;
   virtual void StreamingStep(const std::vector<std::vector<float>>& feats) = 0;
   virtual mnn::Tensor* GetEncOut() = 0;

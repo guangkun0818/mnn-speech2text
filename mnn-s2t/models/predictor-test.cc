@@ -23,10 +23,10 @@ TEST_F(TestMnnPredictor, TestPredictorInit) {
   // Unittest of model init/release.
   mnn_predictor_->Init(4);
   mnn_predictor_->Reset();
-  
+
   mnn_predictor_->Init(8);
   mnn_predictor_->Reset();
-  
+
   mnn_predictor_->Init(1);
   mnn_predictor_->Reset();
 }

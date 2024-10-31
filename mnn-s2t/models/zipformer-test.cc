@@ -41,7 +41,18 @@ class TestMnnZipformer : public ::testing::Test {
 };
 
 TEST_F(TestMnnZipformer, TestModelInit) {
+  // Unittest of model init/release.
   mnn_zipformer_->Init(mnn_zipformer_->ChunkSize());
+  mnn_zipformer_->Reset();
+
+  mnn_zipformer_->Init(mnn_zipformer_->ChunkSize());
+  mnn_zipformer_->Reset();
+
+  mnn_zipformer_->Init(mnn_zipformer_->ChunkSize());
+  mnn_zipformer_->Reset();
+
+  mnn_zipformer_->Init(mnn_zipformer_->ChunkSize());
+  mnn_zipformer_->Reset();
 }
 
 TEST_F(TestMnnZipformer, TestModelInference) {
