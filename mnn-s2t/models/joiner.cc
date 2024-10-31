@@ -15,14 +15,15 @@ MnnJoiner::MnnJoiner(const char* joiner_model) {
   this->model_ = std::shared_ptr<mnn::Interpreter>(
       mnn::Interpreter::createFromFile(joiner_model));
   CHECK_NE(this->model_, nullptr);
-
-  this->session_ = model_->createSession(config_);
-  CHECK_NE(this->session_, nullptr);
+  this->session_ = nullptr;
 }
 
-MnnJoiner::~MnnJoiner() { CHECK(this->model_->releaseSession(this->session_)); }
+MnnJoiner::~MnnJoiner() { this->Reset(); }
 
 void MnnJoiner::Init(const int beam_size) {
+  this->session_ = model_->createSession(config_);
+  CHECK_NE(this->session_, nullptr);
+
   // Predictor Output shape: {beam_size, 1, pred_out_dim_}
   auto pred_out_shape =
       this->model_->getSessionInput(this->session_, "pred_out")->shape();
@@ -34,6 +35,13 @@ void MnnJoiner::Init(const int beam_size) {
 
   // Resize session with input beam_size.
   this->model_->resizeSession(this->session_);
+}
+
+void MnnJoiner::Reset() {
+  if (this->session_) {
+    CHECK(this->model_->releaseSession(this->session_));
+    this->session_ = nullptr;
+  }
 }
 
 void MnnJoiner::StreamingStep(mnn::Tensor* enc_out, mnn::Tensor* pred_out) {

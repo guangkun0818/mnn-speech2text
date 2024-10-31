@@ -17,16 +17,15 @@ MnnPredictor::MnnPredictor(const char* predictor_model, size_t context_size)
   this->model_ = std::shared_ptr<mnn::Interpreter>(
       mnn::Interpreter::createFromFile(predictor_model));
   CHECK_NE(this->model_, nullptr);
-
-  this->session_ = model_->createSession(config_);
-  CHECK_NE(this->session_, nullptr);
+  this->session_ = nullptr;
 }
 
-MnnPredictor::~MnnPredictor() {
-  CHECK(this->model_->releaseSession(this->session_));
-}
+MnnPredictor::~MnnPredictor() { this->Reset(); }
 
 void MnnPredictor::Init(const int beam_size) {
+  this->session_ = model_->createSession(config_);
+  CHECK_NE(this->session_, nullptr);
+
   // Predictor state shape: {beam_size, context_size - 1}
   std::vector<int> init_input_shape = {beam_size, this->context_size_ - 1};
 
@@ -45,6 +44,13 @@ void MnnPredictor::Init(const int beam_size) {
 
   // Resize session with input beam_size.
   this->model_->resizeSession(this->session_);
+}
+
+void MnnPredictor::Reset() {
+  if (this->session_) {
+    CHECK(this->model_->releaseSession(this->session_));
+    this->session_ = nullptr;
+  }
 }
 
 void MnnPredictor::StreamingStep(const std::vector<int>& pred_in) {

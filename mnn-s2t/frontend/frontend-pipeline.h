@@ -67,7 +67,7 @@ class StreamingFrontend : public Frontend {
   void Reset();
 
   // Specify whether pending pcm is enough to emit feats chunk.
-  bool IsReady() const;
+  bool IsReadyForFullChunk() const;
 
   // Interface to accept flushed in pcms.
   virtual void AcceptPcms(const std::vector<float>& pcms);
@@ -75,6 +75,10 @@ class StreamingFrontend : public Frontend {
   // Interface to extract feats.
   virtual void EmitFeats(std::vector<std::vector<float>>& feats,
                          bool is_last = false);
+
+  // Pad partial chunk feats into full chunk with 0.0, use on last chunk
+  // of streaming pipeline since it is usually is not full chunk.
+  void PadIntoFullChunk(std::vector<std::vector<float>>& feats);
 
  private:
   // Prepare pcm_to_extract from pending pcm.

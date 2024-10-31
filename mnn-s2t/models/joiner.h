@@ -26,6 +26,8 @@ class MnnJoiner {
 
   void Init(const int beam_size);
 
+  void Reset();
+
   void StreamingStep(mnn::Tensor* enc_out, mnn::Tensor* pred_out);
 
   // Return logits with shape (beam_size, vocab_size)
