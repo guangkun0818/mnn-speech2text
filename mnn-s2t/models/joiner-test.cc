@@ -19,6 +19,18 @@ class TestMnnJoiner : public ::testing::Test {
   std::shared_ptr<models::MnnJoiner> mnn_joiner_;
 };
 
+TEST_F(TestMnnJoiner, TestMnnJoinerSInitRelease) {
+  // Unittest of model init/release.
+  mnn_joiner_->Init(4);
+  mnn_joiner_->Reset();
+
+  mnn_joiner_->Init(1);
+  mnn_joiner_->Reset();
+
+  mnn_joiner_->Init(8);
+  mnn_joiner_->Reset();
+}
+
 TEST_F(TestMnnJoiner, TestMnnJoinerStreamingStep) {
   mnn_joiner_->Init(4);
   std::vector<int> pred_out_shape = {4, 1, 256};
