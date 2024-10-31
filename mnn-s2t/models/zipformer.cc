@@ -70,7 +70,20 @@ void MnnZipformer::Inference(const std::vector<std::vector<float>>& feats) {
       << "Streaming zipformer does not support non-streaming inference.";
 }
 
-void MnnZipformer::UpdateStates() {}
+void MnnZipformer::UpdateStates() {
+  auto inputs = this->model_->getSessionInputAll(this->session_);
+  auto outputs = this->model_->getSessionOutputAll(this->session_);
+  // Model states are paired with {state, new_state}
+  for (auto input : inputs) {
+    if (input.first == "x") {
+      continue;  // Skip input.
+    }
+    std::string match_output_name = "new_" + input.first;
+    auto found = outputs.find(match_output_name);
+    CHECK(found != outputs.end());
+    input.second->copyFromHostTensor(found->second);
+  }
+}
 
 mnn::Tensor* MnnZipformer::GetEncOut() {
   return this->model_->getSessionOutput(this->session_, "encoder_out");

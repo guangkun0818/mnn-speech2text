@@ -59,14 +59,20 @@ TEST_F(TestMnnZipformer, TestModelInference) {
   wav_reader_->Open(test_wav_);
   std::vector<float> pcm(wav_reader_->data(),
                          wav_reader_->data() + wav_reader_->num_samples());
+  mnn_zipformer_->Init(mnn_zipformer_->ChunkSize());
 
   frontend_->AcceptPcms(pcm);
   std::vector<std::vector<float>> feats;
-  frontend_->EmitFeats(feats);
 
-  ASSERT_EQ(feats.size(), 77);             // Num of frames, chunk_size 77
-  ASSERT_EQ((*feats.begin()).size(), 80);  // Num of feat_dims.
+  while (frontend_->IsReadyForFullChunk()) {
+    frontend_->EmitFeats(feats);
+    ASSERT_EQ(feats.size(), 77);             // Num of frames, chunk_size 77
+    ASSERT_EQ((*feats.begin()).size(), 80);  // Num of feat_dims.
 
-  mnn_zipformer_->Init(feats.size());
-  mnn_zipformer_->StreamingStep(feats);
+    mnn_zipformer_->StreamingStep(feats);
+    // Demo test model streaming step output shape is {1, 16, 256}
+    ASSERT_EQ(mnn_zipformer_->GetEncOut()->shape()[0], 1);
+    ASSERT_EQ(mnn_zipformer_->GetEncOut()->shape()[1], 16);
+    ASSERT_EQ(mnn_zipformer_->GetEncOut()->shape()[2], 256);
+  }
 }

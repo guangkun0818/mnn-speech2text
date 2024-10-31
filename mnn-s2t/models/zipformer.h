@@ -7,6 +7,7 @@
 #define _MNN_S2T_MODEL_ZIPFORMER_H_
 
 #include <memory>
+#include <string>
 #include <vector>
 
 #include "glog/logging.h"
@@ -51,8 +52,6 @@ class MnnZipformer : public MnnEncoder {
   int chunk_size_;
   int processed_lens_;
 };
-
-class MnnStreamingZipformer : public MnnEncoder {};
 
 }  // namespace models
 }  // namespace s2t
