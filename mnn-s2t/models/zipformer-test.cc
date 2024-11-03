@@ -22,8 +22,8 @@ class TestMnnZipformer : public ::testing::Test {
         frontend::LHOTEST_FBANK_OPTIONS(), /*chunk_size=*/77,
         /*pcm_normalize=*/true);
 
-    models::MnnZipformerCfg cfg;
-    cfg.zipformer_model = "../sample_data/models/streaming_zipformer.mnn";
+    models::MnnEncoderCfg cfg;
+    cfg.encoder_model = "../sample_data/models/streaming_zipformer.mnn";
     cfg.chunk_size = 77;
     cfg.feat_dim = 80;
     mnn_zipformer_ = std::make_shared<models::MnnZipformer>(

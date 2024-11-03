@@ -16,18 +16,12 @@
 namespace s2t {
 namespace models {
 
-struct MnnZipformerCfg {
-  std::string zipformer_model;
-  int feat_dim;
-  int chunk_size;
-};
-
 // Non streaming Zipformer.
 // inputTensors : [ x, ...]
 // outputTensors: [ encoder_out, ... ]
 class MnnZipformer : public MnnEncoder {
  public:
-  explicit MnnZipformer(const MnnZipformerCfg& cfg, mnn::ScheduleConfig config);
+  explicit MnnZipformer(const MnnEncoderCfg& cfg, mnn::ScheduleConfig config);
 
   ~MnnZipformer();
 

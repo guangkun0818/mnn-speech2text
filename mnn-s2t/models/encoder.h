@@ -19,6 +19,12 @@ enum EncoderType {
   kZipformer = 0x01,
 };
 
+struct MnnEncoderCfg {
+  std::string encoder_model;
+  int feat_dim;
+  int chunk_size;
+};
+
 class MnnEncoder {
  public:
   virtual ~MnnEncoder() {}

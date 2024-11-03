@@ -8,11 +8,10 @@
 namespace s2t {
 namespace models {
 
-MnnZipformer::MnnZipformer(const MnnZipformerCfg& cfg,
-                           mnn::ScheduleConfig config)
+MnnZipformer::MnnZipformer(const MnnEncoderCfg& cfg, mnn::ScheduleConfig config)
     : feat_dim_(cfg.feat_dim), chunk_size_(cfg.chunk_size), config_(config) {
   this->model_ = std::shared_ptr<mnn::Interpreter>(
-      mnn::Interpreter::createFromFile(cfg.zipformer_model.c_str()));
+      mnn::Interpreter::createFromFile(cfg.encoder_model.c_str()));
   CHECK_NE(this->model_, nullptr);
 }
 
