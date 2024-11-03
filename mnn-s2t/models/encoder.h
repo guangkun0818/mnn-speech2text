@@ -15,6 +15,10 @@
 namespace s2t {
 namespace models {
 
+enum EncoderType {
+  kZipformer = 0x01,
+};
+
 class MnnEncoder {
  public:
   virtual ~MnnEncoder() {}
