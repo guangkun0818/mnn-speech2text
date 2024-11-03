@@ -21,6 +21,10 @@
 namespace s2t {
 namespace decoding {
 
+struct RnntGreedyDecodingStates {
+  std::string partial_result;
+};
+
 class RnntGreedyDecoding : public DecodingMethod {
  public:
   explicit RnntGreedyDecoding(
@@ -38,13 +42,21 @@ class RnntGreedyDecoding : public DecodingMethod {
 
   int Argmax(const std::vector<std::vector<float>>& logits) const;
 
-  std::string Decode(mnn::Tensor* enc_out) override;
+  void Decode(mnn::Tensor* enc_out) override;
+
+  std::string GetResults() override;
 
  private:
+  void UpdateStates(std::string text);
+
+  void ResetDecodingStates();
+
   std::shared_ptr<models::MnnPredictor> predictor_;
   std::shared_ptr<models::MnnJoiner> joiner_;
   std::shared_ptr<models::RnntModelSession> model_sess_;
   std::shared_ptr<SubwordTokenizer> tokenizer_;
+  std::shared_ptr<RnntGreedyDecodingStates> decoding_states_;
+
   size_t max_token_step_;
 };
 

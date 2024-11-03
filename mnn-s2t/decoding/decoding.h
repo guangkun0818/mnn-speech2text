@@ -13,12 +13,17 @@
 namespace s2t {
 namespace decoding {
 
+enum DecodingType {
+  kRnntGreedyDecoding = 0x01,
+};
+
 class DecodingMethod {
  public:
   virtual ~DecodingMethod() {}
   virtual void Init() = 0;
   virtual void Reset() = 0;
-  virtual std::string Decode(mnn::Tensor* enc_out) = 0;
+  virtual void Decode(mnn::Tensor* enc_out) = 0;
+  virtual std::string GetResults() = 0;
 };
 
 }  // namespace decoding

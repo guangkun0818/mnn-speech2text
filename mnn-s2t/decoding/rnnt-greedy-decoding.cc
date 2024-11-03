@@ -19,7 +19,9 @@ RnntGreedyDecoding::RnntGreedyDecoding(
       joiner_(joiner),
       model_sess_(model_sess),
       tokenizer_(tokenizer),
-      max_token_step_(max_token_step) {}
+      max_token_step_(max_token_step) {
+  decoding_states_ = std::make_shared<RnntGreedyDecodingStates>();
+}
 
 void RnntGreedyDecoding::Init() {
   // Beam size = 1
@@ -32,6 +34,7 @@ void RnntGreedyDecoding::Init() {
 void RnntGreedyDecoding::Reset() {
   predictor_->Reset(model_sess_->predictor_session);
   joiner_->Reset(model_sess_->joiner_session);
+  this->ResetDecodingStates();
 }
 
 bool RnntGreedyDecoding::IsBlank(int token) const { return token == 0; }
@@ -45,7 +48,7 @@ int RnntGreedyDecoding::Argmax(
   return argmax;
 };
 
-std::string RnntGreedyDecoding::Decode(mnn::Tensor* enc_out) {
+void RnntGreedyDecoding::Decode(mnn::Tensor* enc_out) {
   this->Init();
   CHECK_EQ(enc_out->shape()[0], 1);           // Batch Size = 1.
   auto tot_time_steps = enc_out->shape()[1];  // (1, tot_time_steps, enc_dim)
@@ -92,7 +95,19 @@ std::string RnntGreedyDecoding::Decode(mnn::Tensor* enc_out) {
     }
   }
   mnn::Tensor::destroy(enc_frame);  // Release enc frame tensor.
-  return tokenizer_->Decode(decoded_result);
+  this->UpdateStates(tokenizer_->Decode(decoded_result));
+}
+
+std::string RnntGreedyDecoding::GetResults() {
+  return this->decoding_states_->partial_result;
+}
+
+void RnntGreedyDecoding::UpdateStates(std::string text) {
+  this->decoding_states_->partial_result += text;
+}
+
+void RnntGreedyDecoding::ResetDecodingStates() {
+  this->decoding_states_->partial_result = "";
 }
 
 }  // namespace decoding

@@ -50,9 +50,9 @@ TEST_F(TestRnntGreedyDecoding, TestDecodingDecode) {
       enc_out_shape, static_cast<void*>(enc_out_data.data()),
       MNN::Tensor::CAFFE);
 
-  auto decoded = greedy_decoding_->Decode(enc_out);
+  greedy_decoding_->Decode(enc_out);
 
-  LOG(INFO) << decoded;
+  LOG(INFO) << greedy_decoding_->GetResults();
 
   mnn::Tensor::destroy(enc_out);
   greedy_decoding_->Reset();
