@@ -25,13 +25,17 @@ class TestRnntGreedyDecoding : public ::testing::Test {
     mnn_joiner_ = std::make_shared<models::MnnJoiner>(
         joiner_cfg, models::CPU_FORWARD_THREAD_8);
 
+    model_sess_ = std::make_shared<models::RnntModelSession>();
+
     tokenizer_ = std::make_shared<decoding::SubwordTokenizer>(
         "../sample_data/units.txt");
-    max_token_step_ = 1;
 
-    model_sess_ = std::make_shared<models::RnntModelSession>();
+    decoding::DecodingCfg decoding_cfg;
+    decoding_cfg.decoding_type = decoding::DecodingType::kRnntGreedyDecoding;
+    decoding_cfg.max_token_step = 1;
+
     greedy_decoding_ = std::make_shared<decoding::RnntGreedyDecoding>(
-        mnn_predictor_, mnn_joiner_, model_sess_, tokenizer_, max_token_step_);
+        mnn_predictor_, mnn_joiner_, model_sess_, tokenizer_, decoding_cfg);
   }
 
   std::shared_ptr<decoding::RnntGreedyDecoding> greedy_decoding_;

@@ -14,12 +14,12 @@ RnntGreedyDecoding::RnntGreedyDecoding(
     const std::shared_ptr<models::MnnPredictor>& predictor,
     const std::shared_ptr<models::MnnJoiner>& joiner,
     const std::shared_ptr<models::RnntModelSession>& model_sess,
-    const std::shared_ptr<SubwordTokenizer>& tokenizer, size_t max_token_step)
+    const std::shared_ptr<SubwordTokenizer>& tokenizer, const DecodingCfg& cfg)
     : predictor_(predictor),
       joiner_(joiner),
       model_sess_(model_sess),
       tokenizer_(tokenizer),
-      max_token_step_(max_token_step) {
+      max_token_step_(cfg.max_token_step) {
   decoding_states_ = std::make_shared<RnntGreedyDecodingStates>();
 }
 

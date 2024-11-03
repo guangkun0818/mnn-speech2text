@@ -17,6 +17,13 @@ enum DecodingType {
   kRnntGreedyDecoding = 0x01,
 };
 
+struct DecodingCfg {
+  DecodingType decoding_type = DecodingType::kRnntGreedyDecoding;
+  size_t max_token_step = 1;  // For Greedy Decoding
+  size_t beam_size;           // For Beam Decoding.
+  size_t cutoff_top_k = 4;    // For Beam Decoding.
+};
+
 class DecodingMethod {
  public:
   virtual ~DecodingMethod() {}

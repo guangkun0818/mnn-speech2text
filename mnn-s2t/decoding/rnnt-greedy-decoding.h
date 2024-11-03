@@ -32,7 +32,7 @@ class RnntGreedyDecoding : public DecodingMethod {
       const std::shared_ptr<models::MnnJoiner>& joiner,
       const std::shared_ptr<models::RnntModelSession>& model_sess,
       const std::shared_ptr<SubwordTokenizer>& tokenizer,
-      size_t max_token_step);
+      const DecodingCfg& cfg);
 
   void Init() override;
 
