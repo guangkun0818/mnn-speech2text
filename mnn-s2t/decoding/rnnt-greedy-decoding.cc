@@ -13,17 +13,25 @@ namespace decoding {
 RnntGreedyDecoding::RnntGreedyDecoding(
     const std::shared_ptr<models::MnnPredictor>& predictor,
     const std::shared_ptr<models::MnnJoiner>& joiner,
+    const std::shared_ptr<models::RnntModelSession>& model_sess,
     const std::shared_ptr<SubwordTokenizer>& tokenizer, size_t max_token_step)
     : predictor_(predictor),
       joiner_(joiner),
+      model_sess_(model_sess),
       tokenizer_(tokenizer),
       max_token_step_(max_token_step) {}
 
 void RnntGreedyDecoding::Init() {
   // Beam size = 1
-  predictor_->Init(1);
-  joiner_->Init(1);
-  predictor_->StreamingStep({0});  // Init predictor with <blank_id>.
+  model_sess_->predictor_session = predictor_->Init(1);
+  model_sess_->joiner_session = joiner_->Init(1);
+  predictor_->StreamingStep(
+      {0}, model_sess_->predictor_session);  // Init predictor with <blank_id>.
+}
+
+void RnntGreedyDecoding::Reset() {
+  predictor_->Reset(model_sess_->predictor_session);
+  joiner_->Reset(model_sess_->joiner_session);
 }
 
 bool RnntGreedyDecoding::IsBlank(int token) const { return token == 0; }
@@ -58,9 +66,11 @@ std::string RnntGreedyDecoding::Decode(mnn::Tensor* enc_out) {
            sizeof(float) * enc_dim);
 
     // Joiner streaming step.
-    joiner_->StreamingStep(/*enc_out=*/enc_frame,
-                           /*pred_out=*/predictor_->GetPredOut());
-    auto logits = joiner_->GetJoinerOut();
+    joiner_->StreamingStep(
+        /*enc_out=*/enc_frame,
+        /*pred_out=*/predictor_->GetPredOut(model_sess_->predictor_session),
+        /*joiner_session=*/model_sess_->joiner_session);
+    auto logits = joiner_->GetJoinerOut(model_sess_->joiner_session);
     auto pred_token = Argmax(logits);
 
     if (IsBlank(pred_token) || num_token_step > max_token_step_) {
@@ -74,7 +84,9 @@ std::string RnntGreedyDecoding::Decode(mnn::Tensor* enc_out) {
       // If not <blank_id>, move to next token_step (lattice move upward)
       // time_step maintained, num_token_step update.
       num_token_step++;
-      predictor_->StreamingStep({pred_token});
+      predictor_->StreamingStep(
+          /*pred_token=*/{pred_token},
+          /*predictor_session=*/model_sess_->predictor_session);
       decoded_result.push_back(pred_token);
       continue;
     }

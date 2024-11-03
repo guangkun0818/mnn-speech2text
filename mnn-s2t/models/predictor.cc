@@ -8,29 +8,24 @@
 namespace s2t {
 namespace models {
 
-MnnPredictor::MnnPredictor(const char* predictor_model, size_t context_size)
-    : context_size_(context_size) {
-  // TODO(guangkun0818): modify to support more config.
-  config_.numThread = 8;
-  config_.type = MNNForwardType::MNN_FORWARD_CPU;
-
+MnnPredictor::MnnPredictor(const char* predictor_model, size_t context_size,
+                           mnn::ScheduleConfig config)
+    : context_size_(context_size), config_(config) {
   this->model_ = std::shared_ptr<mnn::Interpreter>(
       mnn::Interpreter::createFromFile(predictor_model));
   CHECK_NE(this->model_, nullptr);
-  this->session_ = nullptr;
 }
 
-MnnPredictor::~MnnPredictor() { this->Reset(); }
+MnnPredictor::~MnnPredictor() {}
 
-void MnnPredictor::Init(const int beam_size) {
-  this->session_ = model_->createSession(config_);
-  CHECK_NE(this->session_, nullptr);
+mnn::Session* MnnPredictor::Init(const int beam_size) {
+  auto session = model_->createSession(config_);
+  CHECK_NE(session, nullptr);
 
   // Predictor state shape: {beam_size, context_size - 1}
   std::vector<int> init_input_shape = {beam_size, this->context_size_ - 1};
 
-  auto prev_states_t =
-      this->model_->getSessionInput(this->session_, "prev_states");
+  auto prev_states_t = this->model_->getSessionInput(session, "prev_states");
   this->model_->resizeTensor(prev_states_t, init_input_shape);
 
   // Init predictor state as 0
@@ -39,38 +34,42 @@ void MnnPredictor::Init(const int beam_size) {
   }
 
   std::vector<int> pred_in_shape = {beam_size, 1};  // {beam_size, 1}
-  this->model_->resizeTensor(
-      this->model_->getSessionInput(this->session_, "pred_in"), pred_in_shape);
+  this->model_->resizeTensor(this->model_->getSessionInput(session, "pred_in"),
+                             pred_in_shape);
 
   // Resize session with input beam_size.
-  this->model_->resizeSession(this->session_);
+  this->model_->resizeSession(session);
+  return session;
 }
 
-void MnnPredictor::Reset() {
-  if (this->session_) {
-    CHECK(this->model_->releaseSession(this->session_));
-    this->session_ = nullptr;
+void MnnPredictor::Reset(mnn::Session* session) {
+  if (session) {
+    CHECK(this->model_->releaseSession(session));
+    session = nullptr;
   }
 }
 
-void MnnPredictor::StreamingStep(const std::vector<int>& pred_in) {
-  auto pred_in_t = this->model_->getSessionInput(this->session_, "pred_in");
+void MnnPredictor::StreamingStep(const std::vector<int>& pred_in,
+                                 mnn::Session* session) {
+  CHECK_NE(session, nullptr);
+  auto pred_in_t = this->model_->getSessionInput(session, "pred_in");
   CHECK_EQ(pred_in_t->elementSize(), pred_in.size());
 
   // Copy input into session.
   for (int i = 0; i < pred_in_t->elementSize(); i++) {
     pred_in_t->host<int>()[i] = pred_in[i];
   }
-  this->model_->runSession(this->session_);
+  this->model_->runSession(session);
 
   // Update predictor states.
-  this->model_->getSessionInput(this->session_, "prev_states")
+  this->model_->getSessionInput(session, "prev_states")
       ->copyFromHostTensor(
-          this->model_->getSessionOutput(this->session_, "next_states"));
+          this->model_->getSessionOutput(session, "next_states"));
 }
 
-mnn::Tensor* MnnPredictor::GetPredOut() {
-  return this->model_->getSessionOutput(this->session_, "pred_out");
+mnn::Tensor* MnnPredictor::GetPredOut(mnn::Session* session) {
+  CHECK_NE(session, nullptr);
+  return this->model_->getSessionOutput(session, "pred_out");
 }
 
 }  // namespace models

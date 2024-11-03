@@ -15,6 +15,7 @@
 #include "mnn-s2t/decoding/decoding.h"
 #include "mnn-s2t/decoding/tokenizer.h"
 #include "mnn-s2t/models/joiner.h"
+#include "mnn-s2t/models/model-session.h"
 #include "mnn-s2t/models/predictor.h"
 
 namespace s2t {
@@ -25,10 +26,13 @@ class RnntGreedyDecoding : public DecodingMethod {
   explicit RnntGreedyDecoding(
       const std::shared_ptr<models::MnnPredictor>& predictor,
       const std::shared_ptr<models::MnnJoiner>& joiner,
+      const std::shared_ptr<models::RnntModelSession>& model_sess,
       const std::shared_ptr<SubwordTokenizer>& tokenizer,
       size_t max_token_step);
 
   void Init() override;
+
+  void Reset() override;
 
   inline bool IsBlank(int token) const;
 
@@ -39,6 +43,7 @@ class RnntGreedyDecoding : public DecodingMethod {
  private:
   std::shared_ptr<models::MnnPredictor> predictor_;
   std::shared_ptr<models::MnnJoiner> joiner_;
+  std::shared_ptr<models::RnntModelSession> model_sess_;
   std::shared_ptr<SubwordTokenizer> tokenizer_;
   size_t max_token_step_;
 };

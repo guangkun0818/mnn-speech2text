@@ -15,22 +15,26 @@ class TestRnntGreedyDecoding : public ::testing::Test {
   void SetUp() {
     const char* predictor =
         "../sample_data/models/predictor_streaming_step.mnn";
-    mnn_predictor_ = std::make_shared<models::MnnPredictor>(predictor, 5);
+    mnn_predictor_ = std::make_shared<models::MnnPredictor>(
+        predictor, 5, models::CPU_FORWARD_THREAD_8);
 
     const char* joiner = "../sample_data/models/joiner_streaming_step.mnn";
-    mnn_joiner_ = std::make_shared<models::MnnJoiner>(joiner);
+    mnn_joiner_ = std::make_shared<models::MnnJoiner>(
+        joiner, models::CPU_FORWARD_THREAD_8);
 
     tokenizer_ = std::make_shared<decoding::SubwordTokenizer>(
         "../sample_data/units.txt");
     max_token_step_ = 1;
 
+    model_sess_ = std::make_shared<models::RnntModelSession>();
     greedy_decoding_ = std::make_shared<decoding::RnntGreedyDecoding>(
-        mnn_predictor_, mnn_joiner_, tokenizer_, max_token_step_);
+        mnn_predictor_, mnn_joiner_, model_sess_, tokenizer_, max_token_step_);
   }
 
   std::shared_ptr<decoding::RnntGreedyDecoding> greedy_decoding_;
   std::shared_ptr<models::MnnPredictor> mnn_predictor_;
   std::shared_ptr<models::MnnJoiner> mnn_joiner_;
+  std::shared_ptr<models::RnntModelSession> model_sess_;
   std::shared_ptr<decoding::SubwordTokenizer> tokenizer_;
   size_t max_token_step_;
 };
@@ -51,4 +55,5 @@ TEST_F(TestRnntGreedyDecoding, TestDecodingDecode) {
   LOG(INFO) << decoded;
 
   mnn::Tensor::destroy(enc_out);
+  greedy_decoding_->Reset();
 }

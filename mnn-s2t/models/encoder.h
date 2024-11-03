@@ -18,11 +18,13 @@ namespace models {
 class MnnEncoder {
  public:
   virtual ~MnnEncoder() {}
-  virtual void Init(const int num_frames) = 0;
-  virtual void Reset() = 0;
-  virtual void Inference(const std::vector<std::vector<float>>& feats) = 0;
-  virtual void StreamingStep(const std::vector<std::vector<float>>& feats) = 0;
-  virtual mnn::Tensor* GetEncOut() = 0;
+  virtual mnn::Session* Init(const int num_frames) = 0;
+  virtual void Reset(mnn::Session* session) = 0;
+  virtual void Inference(const std::vector<std::vector<float>>& feats,
+                         mnn::Session* session) = 0;
+  virtual void StreamingStep(const std::vector<std::vector<float>>& feats,
+                             mnn::Session* session) = 0;
+  virtual mnn::Tensor* GetEncOut(mnn::Session* session) = 0;
 };
 
 }  // namespace models

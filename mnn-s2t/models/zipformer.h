@@ -22,31 +22,32 @@ namespace models {
 class MnnZipformer : public MnnEncoder {
  public:
   explicit MnnZipformer(const char* zipformer_model, const int feat_dim,
-                        const int chunk_size);
+                        const int chunk_size, mnn::ScheduleConfig config);
 
   ~MnnZipformer();
 
   const int ChunkSize() const;
 
-  void Init(const int num_frames) override;
+  mnn::Session* Init(const int num_frames) override;
 
-  void Reset() override;
+  void Reset(mnn::Session* session) override;
 
-  void StreamingStep(const std::vector<std::vector<float>>& feats) override;
+  void StreamingStep(const std::vector<std::vector<float>>& feats,
+                     mnn::Session* session) override;
 
-  void Inference(const std::vector<std::vector<float>>& feats) override;
+  void Inference(const std::vector<std::vector<float>>& feats,
+                 mnn::Session* session) override;
 
-  mnn::Tensor* GetEncOut() override;
+  mnn::Tensor* GetEncOut(mnn::Session* session) override;
 
  private:
-  void UpdateStates();
+  void UpdateStates(mnn::Session* session);
 
   // Model resource.
   std::shared_ptr<mnn::Interpreter> model_;
 
   // Forward session.
   mnn::ScheduleConfig config_;
-  mnn::Session* session_;
 
   int feat_dim_;
   int chunk_size_;

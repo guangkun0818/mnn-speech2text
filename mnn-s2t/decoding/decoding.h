@@ -17,6 +17,7 @@ class DecodingMethod {
  public:
   virtual ~DecodingMethod() {}
   virtual void Init() = 0;
+  virtual void Reset() = 0;
   virtual std::string Decode(mnn::Tensor* enc_out) = 0;
 };
 
