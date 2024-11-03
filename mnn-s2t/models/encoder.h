@@ -20,6 +20,7 @@ enum EncoderType {
 };
 
 struct MnnEncoderCfg {
+  EncoderType enc_type = EncoderType::kZipformer;  // Default enc type.
   std::string encoder_model;
   int feat_dim;
   int chunk_size;
