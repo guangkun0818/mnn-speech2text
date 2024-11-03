@@ -7,6 +7,7 @@
 #define _MNN_S2T_MODEL_PREDICTOR_H_
 
 #include <memory>
+#include <string>
 #include <vector>
 
 #include "glog/logging.h"
@@ -15,13 +16,17 @@
 namespace s2t {
 namespace models {
 
+struct MnnPredictorCfg {
+  std::string predictor_model;
+  size_t context_size;
+};
+
 // Predictor of Transducer
 // inputTensors : [ prev_states, pred_in, ]
 // outputTensors: [ next_states, pred_out, ]
 class MnnPredictor {
  public:
-  explicit MnnPredictor(const char* predictor_model, size_t context_size,
-                        mnn::ScheduleConfig config);
+  explicit MnnPredictor(const MnnPredictorCfg& cfg, mnn::ScheduleConfig config);
 
   ~MnnPredictor();
 

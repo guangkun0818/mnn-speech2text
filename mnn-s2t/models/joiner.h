@@ -7,6 +7,7 @@
 #define _MNN_S2T_MODEL_JOINER_H_
 
 #include <memory>
+#include <string>
 #include <vector>
 
 #include "glog/logging.h"
@@ -15,12 +16,16 @@
 namespace s2t {
 namespace models {
 
+struct MnnJoinerCfg {
+  std::string joiner_model;
+};
+
 // Joiner of Transducer
 // inputTensors : [ enc_out, pred_out, ]
 // outputTensors: [ logit, ]
 class MnnJoiner {
  public:
-  explicit MnnJoiner(const char* joiner_model, mnn::ScheduleConfig config);
+  explicit MnnJoiner(const MnnJoinerCfg& cfg, mnn::ScheduleConfig config);
 
   ~MnnJoiner();
 

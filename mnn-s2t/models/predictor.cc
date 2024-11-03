@@ -8,11 +8,11 @@
 namespace s2t {
 namespace models {
 
-MnnPredictor::MnnPredictor(const char* predictor_model, size_t context_size,
+MnnPredictor::MnnPredictor(const MnnPredictorCfg& cfg,
                            mnn::ScheduleConfig config)
-    : context_size_(context_size), config_(config) {
+    : context_size_(cfg.context_size), config_(config) {
   this->model_ = std::shared_ptr<mnn::Interpreter>(
-      mnn::Interpreter::createFromFile(predictor_model));
+      mnn::Interpreter::createFromFile(cfg.predictor_model.c_str()));
   CHECK_NE(this->model_, nullptr);
 }
 

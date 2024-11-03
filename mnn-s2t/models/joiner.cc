@@ -8,10 +8,10 @@
 namespace s2t {
 namespace models {
 
-MnnJoiner::MnnJoiner(const char* joiner_model, mnn::ScheduleConfig config)
+MnnJoiner::MnnJoiner(const MnnJoinerCfg& cfg, mnn::ScheduleConfig config)
     : config_(config) {
   this->model_ = std::shared_ptr<mnn::Interpreter>(
-      mnn::Interpreter::createFromFile(joiner_model));
+      mnn::Interpreter::createFromFile(cfg.joiner_model.c_str()));
   CHECK_NE(this->model_, nullptr);
 }
 

@@ -14,9 +14,10 @@ using namespace s2t;
 class TestMnnJoiner : public ::testing::Test {
  protected:
   void SetUp() {
-    const char* model = "../sample_data/models/joiner_streaming_step.mnn";
-    mnn_joiner_ = std::make_shared<models::MnnJoiner>(
-        model, models::CPU_FORWARD_THREAD_8);
+    models::MnnJoinerCfg cfg;
+    cfg.joiner_model = "../sample_data/models/joiner_streaming_step.mnn";
+    mnn_joiner_ =
+        std::make_shared<models::MnnJoiner>(cfg, models::CPU_FORWARD_THREAD_8);
     model_sess_ = std::make_shared<models::RnntModelSession>();
   }
   std::shared_ptr<models::MnnJoiner> mnn_joiner_;

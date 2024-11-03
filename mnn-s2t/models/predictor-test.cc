@@ -14,9 +14,11 @@ using namespace s2t::models;
 class TestMnnPredictor : public ::testing::Test {
  protected:
   void SetUp() {
-    const char* model = "../sample_data/models/predictor_streaming_step.mnn";
-    mnn_predictor_ =
-        std::make_shared<MnnPredictor>(model, 5, CPU_FORWARD_THREAD_8);
+    MnnPredictorCfg cfg;
+    cfg.predictor_model = "../sample_data/models/predictor_streaming_step.mnn";
+    cfg.context_size = 5;
+
+    mnn_predictor_ = std::make_shared<MnnPredictor>(cfg, CPU_FORWARD_THREAD_8);
     model_sess_ = std::make_shared<RnntModelSession>();
   }
   std::shared_ptr<MnnPredictor> mnn_predictor_;

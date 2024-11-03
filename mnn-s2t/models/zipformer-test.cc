@@ -22,10 +22,12 @@ class TestMnnZipformer : public ::testing::Test {
         frontend::LHOTEST_FBANK_OPTIONS(), /*chunk_size=*/77,
         /*pcm_normalize=*/true);
 
-    const char* model = "../sample_data/models/streaming_zipformer.mnn";
+    models::MnnZipformerCfg cfg;
+    cfg.zipformer_model = "../sample_data/models/streaming_zipformer.mnn";
+    cfg.chunk_size = 77;
+    cfg.feat_dim = 80;
     mnn_zipformer_ = std::make_shared<models::MnnZipformer>(
-        model, /*feat_dim=*/80, /*chunk_size=*/77,
-        models::CPU_FORWARD_THREAD_8);
+        cfg, models::CPU_FORWARD_THREAD_8);
     model_sess_ = std::make_shared<models::RnntModelSession>();
   }
 
