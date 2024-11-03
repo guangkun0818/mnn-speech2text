@@ -15,17 +15,7 @@ class TestNonStreamingFrontend : public ::testing::Test {
  protected:
   void SetUp() {
     wav_reader_ = std::make_shared<WavReader>();
-
-    FbankOptions opts;
-    opts.mel_opts.num_bins = 80;        // 80 dim fbank.
-    opts.mel_opts.low_freq = 20.0f;     // Default setting in lhotes
-    opts.mel_opts.high_freq = -400.0f;  // Default setting in lhotes
-
-    opts.frame_opts.dither = 0.0f;
-    opts.frame_opts.snip_edges =
-        true;                    // Different with default setting of lhotes.
-    opts.energy_floor = 1e-10f;  // EPSILON = 1e-10 in lhotes.
-    frontend_ = std::make_shared<Frontend>(opts, true);
+    frontend_ = std::make_shared<Frontend>(LHOTEST_FBANK_OPTIONS(), true);
   }
 
   std::string test_wav_ = "../sample_data/wavs/2086-149220-0019.wav";
@@ -52,22 +42,10 @@ class TestStreamingFrontend : public ::testing::Test {
     wav_reader_ = std::make_shared<WavReader>();
     feat_dim_ = 80;
 
-    FbankOptions opts;
-
-    opts.mel_opts.num_bins = feat_dim_;  // 80 dim fbank.
-    opts.mel_opts.low_freq = 20.0f;      // Default setting in lhotes
-    opts.mel_opts.high_freq = -400.0f;   // Default setting in lhotes
-
-    opts.frame_opts.dither = 0.0f;
-    opts.frame_opts.snip_edges =
-        true;                    // Different with default setting of lhotes.
-    opts.energy_floor = 1e-10f;  // EPSILON = 1e-10 in lhotes.
-    feat_dim_ = opts.mel_opts.num_bins;
-
     chunk_size_ = 77;
-    frontend_ = std::make_shared<Frontend>(opts, true);
-    streaming_frontend_ =
-        std::make_shared<StreamingFrontend>(opts, chunk_size_, true);
+    frontend_ = std::make_shared<Frontend>(LHOTEST_FBANK_OPTIONS(), true);
+    streaming_frontend_ = std::make_shared<StreamingFrontend>(
+        LHOTEST_FBANK_OPTIONS(), chunk_size_, true);
   }
 
   int32_t feat_dim_;

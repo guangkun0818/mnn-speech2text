@@ -10,12 +10,11 @@
 #include <memory>
 #include <vector>
 
+#include "mnn-s2t/frontend/const-setting.h"
 #include "mnn-s2t/frontend/kaldi-fbank-feature.h"
 
 namespace s2t {
 namespace frontend {
-
-const float NORMALIZE_FACTOR = 1.0f / 32768;
 
 // Non streaming frontend pipeline.
 class Frontend {

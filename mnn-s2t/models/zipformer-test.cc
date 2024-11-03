@@ -18,17 +18,9 @@ class TestMnnZipformer : public ::testing::Test {
   void SetUp() {
     wav_reader_ = std::make_shared<frontend::WavReader>();
 
-    frontend::FbankOptions opts;
-    opts.mel_opts.num_bins = 80;        // 80 dim fbank.
-    opts.mel_opts.low_freq = 20.0f;     // Default setting in lhotes
-    opts.mel_opts.high_freq = -400.0f;  // Default setting in lhotes
-
-    opts.frame_opts.dither = 0.0f;
-    opts.frame_opts.snip_edges =
-        true;                    // Different with default setting of lhotes.
-    opts.energy_floor = 1e-10f;  // EPSILON = 1e-10 in lhotes.
     frontend_ = std::make_shared<frontend::StreamingFrontend>(
-        opts, /*chunk_size=*/77, /*pcm_normalize=*/true);
+        frontend::LHOTEST_FBANK_OPTIONS(), /*chunk_size=*/77,
+        /*pcm_normalize=*/true);
 
     const char* model = "../sample_data/models/streaming_zipformer.mnn";
     mnn_zipformer_ = std::make_shared<models::MnnZipformer>(
