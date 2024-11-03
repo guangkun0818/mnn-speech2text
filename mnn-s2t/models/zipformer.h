@@ -25,7 +25,7 @@ class MnnZipformer : public MnnEncoder {
 
   ~MnnZipformer();
 
-  const int ChunkSize() const;
+  const int ChunkSize() const override;
 
   mnn::Session* Init(const int num_frames) override;
 
