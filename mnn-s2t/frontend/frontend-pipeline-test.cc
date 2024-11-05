@@ -118,7 +118,7 @@ TEST_F(TestStreamingFrontend, TestPrecisionCheck) {
     // Enable padding on last chunk.
     streaming_frontend_->PadIntoFullChunk(feats_chunk);
     ASSERT_EQ(chunk_size_, feats_chunk.size());
-    
+
     streaming_frontend_->Reset();
     iter--;
   }
