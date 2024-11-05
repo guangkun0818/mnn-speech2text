@@ -39,9 +39,6 @@ class RnntStreamingSession {
 
   ~RnntStreamingSession();
 
-  // Init Session right after Session built.
-  void InitSession();
-
   // Flush streaming audio data into session.
   void AcceptWaves(const std::vector<float>& pcms);
 
@@ -52,13 +49,16 @@ class RnntStreamingSession {
   // is not full chunk.
   void FinalizeSession();
 
+  std::string GetDecodedText() const;
+
+ private:
+  // Init Session right after Session built.
+  void InitSession();
+
   // Reset session by releasing model session and reseting frontend pipline and
   // decoding method.
   void Reset();
 
-  std::string GetDecodedText() const;
-
- private:
   std::shared_ptr<RnntRsrc> rnnt_rsrc_;
   std::shared_ptr<SessionRsrc> session_rsrc_;
 

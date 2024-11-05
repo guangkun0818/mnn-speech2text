@@ -34,7 +34,7 @@ RnntStreamingSession::RnntStreamingSession(
       LOG(WARNING) << "Unsupported decoding type.";
       break;
   }
-  this->decoded_text_.clear();  // Clear partial results.
+  this->InitSession();
 }
 
 RnntStreamingSession::~RnntStreamingSession() { this->Reset(); }
@@ -47,6 +47,7 @@ void RnntStreamingSession::InitSession() {
       rnnt_rsrc_->encoder->Init(rnnt_rsrc_->encoder->ChunkSize());
   // Init Decoding and predictor/joiner;
   session_rsrc_->decoding->Init();
+  this->decoded_text_.clear();  // Clear partial results
 }
 
 void RnntStreamingSession::Reset() {
@@ -76,7 +77,7 @@ void RnntStreamingSession::Process() {
     session_rsrc_->decoding->Decode(rnnt_rsrc_->encoder->GetEncOut(
         session_rsrc_->model_session->encoder_session));
 
-    this->decoded_text_ += session_rsrc_->decoding->GetResults();
+    this->decoded_text_ = session_rsrc_->decoding->GetResults();
   }
 }
 
@@ -92,6 +93,7 @@ void RnntStreamingSession::FinalizeSession() {
   // Decoding.
   session_rsrc_->decoding->Decode(rnnt_rsrc_->encoder->GetEncOut(
       session_rsrc_->model_session->encoder_session));
+  this->decoded_text_ = session_rsrc_->decoding->GetResults();
 }
 
 std::string RnntStreamingSession::GetDecodedText() const {

@@ -33,18 +33,16 @@ class TestRnntStreamingSession : public ::testing::Test {
     enc_cfg_.chunk_size = 77;
     enc_cfg_.feat_dim = 80;
     enc_cfg_.enc_type = models::EncoderType::kZipformer;
-    enc_cfg_.encoder_model = "../sample_data/models/streaming_zipformer.mnn";
+    enc_cfg_.encoder_model = "../sample_data/models/encoder-int8.mnn";
   }
 
   void SetUpRnntPredictorCfg() {
     pred_cfg_.context_size = 5;
-    pred_cfg_.predictor_model =
-        "../sample_data/models/predictor_streaming_step.mnn";
+    pred_cfg_.predictor_model = "../sample_data/models/predictor-int8.mnn";
   }
 
   void SetUpJoinerCfg() {
-    joiner_cfg_.joiner_model =
-        "../sample_data/models/joiner_streaming_step.mnn";
+    joiner_cfg_.joiner_model = "../sample_data/models/joiner-int8.mnn";
   }
 
   void SetUpSessionCfg() {
@@ -66,34 +64,95 @@ class TestRnntStreamingSession : public ::testing::Test {
   std::shared_ptr<frontend::WavReader> wav_reader_;
 };
 
-TEST_F(TestRnntStreamingSession, TestRnntStreamingSessionInitRelease) {
-  // Unittest of session init/release.
-  this->session_->InitSession();
-  this->session_->Reset();
-
-  this->session_->InitSession();
-  this->session_->Reset();
-
-  this->session_->InitSession();
-  this->session_->Reset();
-
-  this->session_->InitSession();
-  this->session_->Reset();
-}
-
-TEST_F(TestRnntStreamingSession, TestRnntStreamingSessionAcceptWaves) {
-  this->session_->InitSession();
-  std::string test_wav = "../sample_data/wavs/2086-149220-0019.wav";
+TEST_F(TestRnntStreamingSession, TestRnntStreamingSessionCompleteProcess1) {
+  std::string test_wav = "../sample_data/wavs/251-136532-0007.wav";
   wav_reader_->Open(test_wav);
   std::vector<float> pcm(wav_reader_->data(),
                          wav_reader_->data() + wav_reader_->num_samples());
   this->session_->AcceptWaves(pcm);
-  this->session_->Reset();
+  this->session_->Process();
+  this->session_->FinalizeSession();
+  LOG(INFO) << this->session_->GetDecodedText();
 }
 
-TEST_F(TestRnntStreamingSession, TestRnntStreamingSessionCompleteProcess) {
-  this->session_->Reset();
-  this->session_->InitSession();
+TEST_F(TestRnntStreamingSession, TestRnntStreamingSessionCompleteProcess2) {
+  std::string test_wav = "../sample_data/wavs/652-130726-0030.wav";
+  wav_reader_->Open(test_wav);
+  std::vector<float> pcm(wav_reader_->data(),
+                         wav_reader_->data() + wav_reader_->num_samples());
+  this->session_->AcceptWaves(pcm);
+  this->session_->Process();
+  this->session_->FinalizeSession();
+  LOG(INFO) << this->session_->GetDecodedText();
+}
+
+TEST_F(TestRnntStreamingSession, TestRnntStreamingSessionCompleteProcess3) {
+  std::string test_wav = "../sample_data/wavs/777-126732-0012.wav";
+  wav_reader_->Open(test_wav);
+  std::vector<float> pcm(wav_reader_->data(),
+                         wav_reader_->data() + wav_reader_->num_samples());
+  this->session_->AcceptWaves(pcm);
+  this->session_->Process();
+  this->session_->FinalizeSession();
+  LOG(INFO) << this->session_->GetDecodedText();
+}
+
+TEST_F(TestRnntStreamingSession, TestRnntStreamingSessionCompleteProcess4) {
+  std::string test_wav = "../sample_data/wavs/1272-135031-0020.wav";
+  wav_reader_->Open(test_wav);
+  std::vector<float> pcm(wav_reader_->data(),
+                         wav_reader_->data() + wav_reader_->num_samples());
+  this->session_->AcceptWaves(pcm);
+  this->session_->Process();
+  this->session_->FinalizeSession();
+  LOG(INFO) << this->session_->GetDecodedText();
+}
+
+TEST_F(TestRnntStreamingSession, TestRnntStreamingSessionCompleteProcess5) {
+  std::string test_wav = "../sample_data/wavs/1462-170138-0015.wav";
+  wav_reader_->Open(test_wav);
+  std::vector<float> pcm(wav_reader_->data(),
+                         wav_reader_->data() + wav_reader_->num_samples());
+  this->session_->AcceptWaves(pcm);
+  this->session_->Process();
+  this->session_->FinalizeSession();
+  LOG(INFO) << this->session_->GetDecodedText();
+}
+
+TEST_F(TestRnntStreamingSession, TestRnntStreamingSessionCompleteProcess6) {
+  std::string test_wav = "../sample_data/wavs/1673-143397-0005.wav";
+  wav_reader_->Open(test_wav);
+  std::vector<float> pcm(wav_reader_->data(),
+                         wav_reader_->data() + wav_reader_->num_samples());
+  this->session_->AcceptWaves(pcm);
+  this->session_->Process();
+  this->session_->FinalizeSession();
+  LOG(INFO) << this->session_->GetDecodedText();
+}
+
+TEST_F(TestRnntStreamingSession, TestRnntStreamingSessionCompleteProcess7) {
+  std::string test_wav = "../sample_data/wavs/1919-142785-0010.wav";
+  wav_reader_->Open(test_wav);
+  std::vector<float> pcm(wav_reader_->data(),
+                         wav_reader_->data() + wav_reader_->num_samples());
+  this->session_->AcceptWaves(pcm);
+  this->session_->Process();
+  this->session_->FinalizeSession();
+  LOG(INFO) << this->session_->GetDecodedText();
+}
+
+TEST_F(TestRnntStreamingSession, TestRnntStreamingSessionCompleteProcess8) {
+  std::string test_wav = "../sample_data/wavs/2035-147961-0020.wav";
+  wav_reader_->Open(test_wav);
+  std::vector<float> pcm(wav_reader_->data(),
+                         wav_reader_->data() + wav_reader_->num_samples());
+  this->session_->AcceptWaves(pcm);
+  this->session_->Process();
+  this->session_->FinalizeSession();
+  LOG(INFO) << this->session_->GetDecodedText();
+}
+
+TEST_F(TestRnntStreamingSession, TestRnntStreamingSessionCompleteProcess9) {
   std::string test_wav = "../sample_data/wavs/2086-149220-0019.wav";
   wav_reader_->Open(test_wav);
   std::vector<float> pcm(wav_reader_->data(),
@@ -102,5 +161,15 @@ TEST_F(TestRnntStreamingSession, TestRnntStreamingSessionCompleteProcess) {
   this->session_->Process();
   this->session_->FinalizeSession();
   LOG(INFO) << this->session_->GetDecodedText();
-  this->session_->Reset();
+}
+
+TEST_F(TestRnntStreamingSession, TestRnntStreamingSessionCompleteProcess10) {
+  std::string test_wav = "../sample_data/wavs/3752-4943-0002.wav";
+  wav_reader_->Open(test_wav);
+  std::vector<float> pcm(wav_reader_->data(),
+                         wav_reader_->data() + wav_reader_->num_samples());
+  this->session_->AcceptWaves(pcm);
+  this->session_->Process();
+  this->session_->FinalizeSession();
+  LOG(INFO) << this->session_->GetDecodedText();
 }
