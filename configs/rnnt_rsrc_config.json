@@ -2,12 +2,12 @@
     "encoder":{
         "type": "zipformer",
         "config": {
-            "model_path": "sample_data/models/streaming_zipformer.mnn",
+            "model_path": "sample_data/models/encoder-int8.mnn",
             "chunk_size": 77,
             "feats_dim": 80
         }
     },
-    "predictor": "sample_data/models/predictor_streaming_step.mnn",
-    "joiner": "sample_data/models/joiner_streaming_step.mnn",
+    "predictor": "sample_data/models/predictor-int8.mnn",
+    "joiner": "sample_data/models/joinerint8.mnn",
     "units_file": "sample_data/units.txt"
 }

@@ -14,14 +14,13 @@ class TestRnntGreedyDecoding : public ::testing::Test {
  protected:
   void SetUp() {
     models::MnnPredictorCfg predictor_cfg;
-    predictor_cfg.predictor_model =
-        "../sample_data/models/predictor_streaming_step.mnn";
+    predictor_cfg.predictor_model = "../sample_data/models/predictor-int8.mnn";
     predictor_cfg.context_size = 5;
     mnn_predictor_ = std::make_shared<models::MnnPredictor>(
         predictor_cfg, models::CPU_FORWARD_THREAD_8);
 
     models::MnnJoinerCfg joiner_cfg;
-    joiner_cfg.joiner_model = "../sample_data/models/joiner_streaming_step.mnn";
+    joiner_cfg.joiner_model = "../sample_data/models/joiner-int8.mnn";
     mnn_joiner_ = std::make_shared<models::MnnJoiner>(
         joiner_cfg, models::CPU_FORWARD_THREAD_8);
 

@@ -15,7 +15,7 @@ class TestMnnJoiner : public ::testing::Test {
  protected:
   void SetUp() {
     models::MnnJoinerCfg cfg;
-    cfg.joiner_model = "../sample_data/models/joiner_streaming_step.mnn";
+    cfg.joiner_model = "../sample_data/models/joiner-int8.mnn";
     mnn_joiner_ =
         std::make_shared<models::MnnJoiner>(cfg, models::CPU_FORWARD_THREAD_8);
     model_sess_ = std::make_shared<models::RnntModelSession>();

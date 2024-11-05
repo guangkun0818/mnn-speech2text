@@ -15,7 +15,7 @@ class TestMnnPredictor : public ::testing::Test {
  protected:
   void SetUp() {
     MnnPredictorCfg cfg;
-    cfg.predictor_model = "../sample_data/models/predictor_streaming_step.mnn";
+    cfg.predictor_model = "../sample_data/models/predictor-int8.mnn";
     cfg.context_size = 5;
 
     mnn_predictor_ = std::make_shared<MnnPredictor>(cfg, CPU_FORWARD_THREAD_8);
