@@ -42,11 +42,11 @@ mnn::Session* MnnPredictor::Init(const int beam_size) {
   return session;
 }
 
-void MnnPredictor::Reset(mnn::Session* session) {
+mnn::Session* MnnPredictor::Reset(mnn::Session* session) {
   if (session) {
     CHECK(this->model_->releaseSession(session));
-    session = nullptr;
   }
+  return nullptr;
 }
 
 void MnnPredictor::StreamingStep(const std::vector<int>& pred_in,

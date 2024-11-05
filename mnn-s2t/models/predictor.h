@@ -32,7 +32,7 @@ class MnnPredictor {
 
   mnn::Session* Init(const int beam_size);
 
-  void Reset(mnn::Session* session);
+  mnn::Session* Reset(mnn::Session* session);
 
   void StreamingStep(const std::vector<int>& pred_in, mnn::Session* session);
 

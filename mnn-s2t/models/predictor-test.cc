@@ -28,17 +28,24 @@ class TestMnnPredictor : public ::testing::Test {
 TEST_F(TestMnnPredictor, TestPredictorInit) {
   // Unittest of model init/release.
   model_sess_->predictor_session = mnn_predictor_->Init(4);
-  mnn_predictor_->Reset(model_sess_->predictor_session);
+  model_sess_->predictor_session =
+      mnn_predictor_->Reset(model_sess_->predictor_session);
+  ASSERT_EQ(model_sess_->predictor_session, nullptr);
 
   model_sess_->predictor_session = mnn_predictor_->Init(8);
-  mnn_predictor_->Reset(model_sess_->predictor_session);
+  model_sess_->predictor_session =
+      mnn_predictor_->Reset(model_sess_->predictor_session);
+  ASSERT_EQ(model_sess_->predictor_session, nullptr);
 
   model_sess_->predictor_session = mnn_predictor_->Init(1);
-  mnn_predictor_->Reset(model_sess_->predictor_session);
+  model_sess_->predictor_session =
+      mnn_predictor_->Reset(model_sess_->predictor_session);
+  ASSERT_EQ(model_sess_->predictor_session, nullptr);
 }
 
 TEST_F(TestMnnPredictor, TestPredictorStreamingStep) {
-  mnn_predictor_->Reset(model_sess_->predictor_session);
+  model_sess_->predictor_session =
+      mnn_predictor_->Reset(model_sess_->predictor_session);
   model_sess_->predictor_session = mnn_predictor_->Init(4);
 
   std::vector<int> pred_in = {1, 2, 3, 4};
