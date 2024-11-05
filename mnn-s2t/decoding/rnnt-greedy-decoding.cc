@@ -51,7 +51,6 @@ int RnntGreedyDecoding::Argmax(
 };
 
 void RnntGreedyDecoding::Decode(mnn::Tensor* enc_out) {
-  this->Init();
   CHECK_EQ(enc_out->shape()[0], 1);           // Batch Size = 1.
   auto tot_time_steps = enc_out->shape()[1];  // (1, tot_time_steps, enc_dim)
   auto enc_dim = enc_out->shape()[2];
@@ -63,7 +62,7 @@ void RnntGreedyDecoding::Decode(mnn::Tensor* enc_out) {
 
   int curr_time_step = 0;
   int num_token_step = 0;
-  std::vector<int> decoded_result;
+  std::vector<int> decoded_tokens;
   while (curr_time_step < tot_time_steps) {
     // Slice encoder_out as frame
     memcpy(enc_frame->host<float>(),
@@ -92,24 +91,26 @@ void RnntGreedyDecoding::Decode(mnn::Tensor* enc_out) {
       predictor_->StreamingStep(
           /*pred_token=*/{pred_token},
           /*predictor_session=*/model_sess_->predictor_session);
-      decoded_result.push_back(pred_token);
+      decoded_tokens.push_back(pred_token);
       continue;
     }
   }
   mnn::Tensor::destroy(enc_frame);  // Release enc frame tensor.
-  this->UpdateStates(tokenizer_->Decode(decoded_result));
+  this->UpdateStates(decoded_tokens);
 }
 
 std::string RnntGreedyDecoding::GetResults() {
-  return this->decoding_states_->partial_result;
+  return this->tokenizer_->Decode(decoding_states_->partial_result);
 }
 
-void RnntGreedyDecoding::UpdateStates(std::string text) {
-  this->decoding_states_->partial_result += text;
+void RnntGreedyDecoding::UpdateStates(const std::vector<int>& tokens) {
+  this->decoding_states_->partial_result.insert(
+      this->decoding_states_->partial_result.end(), tokens.begin(),
+      tokens.end());
 }
 
 void RnntGreedyDecoding::ResetDecodingStates() {
-  this->decoding_states_->partial_result = "";
+  std::vector<int>().swap(this->decoding_states_->partial_result);
 }
 
 }  // namespace decoding

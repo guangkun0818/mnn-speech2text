@@ -22,7 +22,7 @@ namespace s2t {
 namespace decoding {
 
 struct RnntGreedyDecodingStates {
-  std::string partial_result;
+  std::vector<int> partial_result;  // Partial decoded tokens.
 };
 
 class RnntGreedyDecoding : public DecodingMethod {
@@ -47,7 +47,7 @@ class RnntGreedyDecoding : public DecodingMethod {
   std::string GetResults() override;
 
  private:
-  void UpdateStates(std::string text);
+  void UpdateStates(const std::vector<int>& tokens);
 
   void ResetDecodingStates();
 
