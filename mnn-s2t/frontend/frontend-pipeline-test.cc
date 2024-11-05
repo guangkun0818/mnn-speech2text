@@ -82,37 +82,44 @@ TEST_F(TestStreamingFrontend, TestPrecisionCheck) {
   std::vector<std::vector<float>> offline_feats;
   frontend_->EmitFeats(offline_feats);
 
-  streaming_frontend_->AcceptPcms(pcm);
-  std::vector<std::vector<float>> feats_chunk;
+  // Test streaming frontend for 3 times.
+  int iter = 3;
+  while (iter > 0) {
+    streaming_frontend_->AcceptPcms(pcm);
+    std::vector<std::vector<float>> feats_chunk;
 
-  // Precision check with Non-streaming frontend
-  int chunk_id = 0;
-  int num_frames = 0;
-  while (streaming_frontend_->IsReadyForFullChunk()) {
-    streaming_frontend_->EmitFeats(feats_chunk);
+    // Precision check with Non-streaming frontend
+    int chunk_id = 0;
+    int num_frames = 0;
+    while (streaming_frontend_->IsReadyForFullChunk()) {
+      streaming_frontend_->EmitFeats(feats_chunk);
+      num_frames += feats_chunk.size();
+
+      // Presicion check over all elems.
+      for (int frame_id = 0; frame_id < chunk_size_; frame_id++) {
+        for (int j = 0; j < feat_dim_; j++) {
+          ASSERT_FLOAT_EQ(offline_feats[chunk_id * chunk_size_ + frame_id][j],
+                          feats_chunk[frame_id][j]);
+        }
+      }
+      chunk_id++;
+    }
+
+    // Process last chunk.
+    streaming_frontend_->EmitFeats(feats_chunk, true);
     num_frames += feats_chunk.size();
-
-    // Presicion check over all elems.
-    for (int frame_id = 0; frame_id < chunk_size_; frame_id++) {
+    ASSERT_EQ(num_frames, offline_feats.size());
+    for (int frame_id = 0; frame_id < feats_chunk.size(); frame_id++) {
       for (int j = 0; j < feat_dim_; j++) {
         ASSERT_FLOAT_EQ(offline_feats[chunk_id * chunk_size_ + frame_id][j],
                         feats_chunk[frame_id][j]);
       }
     }
-    chunk_id++;
+    // Enable padding on last chunk.
+    streaming_frontend_->PadIntoFullChunk(feats_chunk);
+    ASSERT_EQ(chunk_size_, feats_chunk.size());
+    
+    streaming_frontend_->Reset();
+    iter--;
   }
-
-  // Process last chunk.
-  streaming_frontend_->EmitFeats(feats_chunk, true);
-  num_frames += feats_chunk.size();
-  ASSERT_EQ(num_frames, offline_feats.size());
-  for (int frame_id = 0; frame_id < feats_chunk.size(); frame_id++) {
-    for (int j = 0; j < feat_dim_; j++) {
-      ASSERT_FLOAT_EQ(offline_feats[chunk_id * chunk_size_ + frame_id][j],
-                      feats_chunk[frame_id][j]);
-    }
-  }
-  // Enable padding on last chunk.
-  streaming_frontend_->PadIntoFullChunk(feats_chunk);
-  ASSERT_EQ(chunk_size_, feats_chunk.size());
 }
