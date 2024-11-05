@@ -38,7 +38,7 @@ class TestRnntGreedyDecoding : public ::testing::Test {
         mnn_predictor_, mnn_joiner_, model_sess_, tokenizer_, decoding_cfg);
   }
 
-  std::shared_ptr<decoding::RnntGreedyDecoding> greedy_decoding_;
+  std::shared_ptr<decoding::DecodingMethod> greedy_decoding_;
   std::shared_ptr<models::MnnPredictor> mnn_predictor_;
   std::shared_ptr<models::MnnJoiner> mnn_joiner_;
   std::shared_ptr<models::RnntModelSession> model_sess_;
@@ -46,7 +46,16 @@ class TestRnntGreedyDecoding : public ::testing::Test {
   size_t max_token_step_;
 };
 
-TEST_F(TestRnntGreedyDecoding, TestDecodingInit) { greedy_decoding_->Init(); }
+TEST_F(TestRnntGreedyDecoding, TestDecodingInit) {
+  greedy_decoding_->Init();
+  greedy_decoding_->Reset();
+  greedy_decoding_->Init();
+  greedy_decoding_->Reset();
+  greedy_decoding_->Init();
+  greedy_decoding_->Reset();
+  greedy_decoding_->Init();
+  greedy_decoding_->Reset();
+}
 
 TEST_F(TestRnntGreedyDecoding, TestDecodingDecode) {
   greedy_decoding_->Init();
