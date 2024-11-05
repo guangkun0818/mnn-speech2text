@@ -27,17 +27,20 @@ class TestMnnJoiner : public ::testing::Test {
 TEST_F(TestMnnJoiner, TestMnnJoinerSInitRelease) {
   // Unittest of model init/release.
   model_sess_->joiner_session = mnn_joiner_->Init(4);
-  mnn_joiner_->Reset(model_sess_->joiner_session);
+  model_sess_->joiner_session = mnn_joiner_->Reset(model_sess_->joiner_session);
+  ASSERT_EQ(model_sess_->joiner_session, nullptr);
 
   model_sess_->joiner_session = mnn_joiner_->Init(1);
-  mnn_joiner_->Reset(model_sess_->joiner_session);
+  model_sess_->joiner_session = mnn_joiner_->Reset(model_sess_->joiner_session);
+  ASSERT_EQ(model_sess_->joiner_session, nullptr);
 
   model_sess_->joiner_session = mnn_joiner_->Init(8);
-  mnn_joiner_->Reset(model_sess_->joiner_session);
+  model_sess_->joiner_session = mnn_joiner_->Reset(model_sess_->joiner_session);
+  ASSERT_EQ(model_sess_->joiner_session, nullptr);
 }
 
 TEST_F(TestMnnJoiner, TestMnnJoinerStreamingStep) {
-  mnn_joiner_->Reset(model_sess_->joiner_session);
+  model_sess_->joiner_session = mnn_joiner_->Reset(model_sess_->joiner_session);
   model_sess_->joiner_session = mnn_joiner_->Init(4);
   std::vector<int> pred_out_shape = {4, 1, 256};
   auto pred_out_data =

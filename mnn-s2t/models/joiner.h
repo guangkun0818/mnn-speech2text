@@ -31,7 +31,7 @@ class MnnJoiner {
 
   mnn::Session* Init(const int beam_size);
 
-  void Reset(mnn::Session* session);
+  mnn::Session* Reset(mnn::Session* session);
 
   void StreamingStep(mnn::Tensor* enc_out, mnn::Tensor* pred_out,
                      mnn::Session* session);

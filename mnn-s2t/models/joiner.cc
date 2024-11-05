@@ -34,11 +34,11 @@ mnn::Session* MnnJoiner::Init(const int beam_size) {
   return session;
 }
 
-void MnnJoiner::Reset(mnn::Session* session) {
+mnn::Session* MnnJoiner::Reset(mnn::Session* session) {
   if (session) {
     CHECK(this->model_->releaseSession(session));
-    session = nullptr;
   }
+  return nullptr;
 }
 
 void MnnJoiner::StreamingStep(mnn::Tensor* enc_out, mnn::Tensor* pred_out,
