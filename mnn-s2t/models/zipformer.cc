@@ -31,10 +31,11 @@ mnn::Session* MnnZipformer::Init(const int num_frames) {
   CHECK_EQ(input_feat->shape()[2], feat_dim_);
 
   this->model_->resizeTensor(input_feat, feat_shape);
-  this->processed_lens_ = 0;
 
   // Resize session with input feat shape.
   this->model_->resizeSession(session);
+  this->InitStates(session);  // Init session states.
+
   return session;
 }
 
@@ -53,7 +54,7 @@ void MnnZipformer::StreamingStep(const std::vector<std::vector<float>>& feats,
   CHECK_EQ(input_feat->shape()[2], feat_dim_);
   CHECK_EQ(input_feat->shape()[1], feats.size());
 
-  for (int frame_id; frame_id < input_feat->shape()[1]; frame_id++) {
+  for (int frame_id = 0; frame_id < input_feat->shape()[1]; frame_id++) {
     memcpy(input_feat->host<float>() + (frame_id * feat_dim_),
            feats[frame_id].data(), sizeof(float) * feat_dim_);
   }
@@ -66,6 +67,19 @@ void MnnZipformer::Inference(const std::vector<std::vector<float>>& feats,
                              mnn::Session* session) {
   LOG(WARNING)
       << "Streaming zipformer does not support non-streaming inference.";
+}
+
+void MnnZipformer::InitStates(mnn::Session* session) {
+  // Init input states as 0.0f
+  auto inputs = this->model_->getSessionInputAll(session);
+  for (auto input : inputs) {
+    if (input.first == "x") {
+      continue;  // Skip input.
+    }
+    for (int i = 0; i < input.second->elementSize(); i++) {
+      input.second->host<float>()[i] = 0.0f;
+    }
+  }
 }
 
 void MnnZipformer::UpdateStates(mnn::Session* session) {

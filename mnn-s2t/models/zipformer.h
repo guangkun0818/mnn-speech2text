@@ -40,6 +40,8 @@ class MnnZipformer : public MnnEncoder {
   mnn::Tensor* GetEncOut(mnn::Session* session) override;
 
  private:
+  void InitStates(mnn::Session* session);
+
   void UpdateStates(mnn::Session* session);
 
   // Model resource.
@@ -50,7 +52,6 @@ class MnnZipformer : public MnnEncoder {
 
   int feat_dim_;
   int chunk_size_;
-  int processed_lens_;
 };
 
 }  // namespace models

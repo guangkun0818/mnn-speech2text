@@ -23,7 +23,7 @@ class TestMnnZipformer : public ::testing::Test {
         /*pcm_normalize=*/true);
 
     models::MnnEncoderCfg cfg;
-    cfg.encoder_model = "../sample_data/models/streaming_zipformer.mnn";
+    cfg.encoder_model = "../sample_data/models/encoder-int8.mnn";
     cfg.chunk_size = 77;
     cfg.feat_dim = 80;
     mnn_zipformer_ = std::make_shared<models::MnnZipformer>(
