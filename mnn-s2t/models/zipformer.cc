@@ -38,11 +38,11 @@ mnn::Session* MnnZipformer::Init(const int num_frames) {
   return session;
 }
 
-void MnnZipformer::Reset(mnn::Session* session) {
+mnn::Session* MnnZipformer::Reset(mnn::Session* session) {
   if (session) {
     CHECK(this->model_->releaseSession(session));
-    session = nullptr;
   }
+  return nullptr;
 }
 
 void MnnZipformer::StreamingStep(const std::vector<std::vector<float>>& feats,

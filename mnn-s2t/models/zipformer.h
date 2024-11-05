@@ -29,7 +29,7 @@ class MnnZipformer : public MnnEncoder {
 
   mnn::Session* Init(const int num_frames) override;
 
-  void Reset(mnn::Session* session) override;
+  mnn::Session* Reset(mnn::Session* session) override;
 
   void StreamingStep(const std::vector<std::vector<float>>& feats,
                      mnn::Session* session) override;

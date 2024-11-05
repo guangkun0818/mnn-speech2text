@@ -32,7 +32,7 @@ class MnnEncoder {
   virtual const int ChunkSize()
       const = 0;  // If non streaming encoder should return -1.
   virtual mnn::Session* Init(const int num_frames) = 0;
-  virtual void Reset(mnn::Session* session) = 0;
+  virtual mnn::Session* Reset(mnn::Session* session) = 0;
   virtual void Inference(const std::vector<std::vector<float>>& feats,
                          mnn::Session* session) = 0;
   virtual void StreamingStep(const std::vector<std::vector<float>>& feats,

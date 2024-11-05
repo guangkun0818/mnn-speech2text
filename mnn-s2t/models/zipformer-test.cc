@@ -32,7 +32,7 @@ class TestMnnZipformer : public ::testing::Test {
   }
 
   std::string test_wav_ = "../sample_data/wavs/2086-149220-0019.wav";
-  std::shared_ptr<models::MnnZipformer> mnn_zipformer_;
+  std::shared_ptr<models::MnnEncoder> mnn_zipformer_;
   std::shared_ptr<models::RnntModelSession> model_sess_;
   std::shared_ptr<frontend::StreamingFrontend> frontend_;
   std::shared_ptr<frontend::WavReader> wav_reader_;
@@ -42,26 +42,35 @@ TEST_F(TestMnnZipformer, TestModelInit) {
   // Unittest of model init/release.
   model_sess_->encoder_session =
       mnn_zipformer_->Init(mnn_zipformer_->ChunkSize());
-  mnn_zipformer_->Reset(model_sess_->encoder_session);
+  model_sess_->encoder_session =
+      mnn_zipformer_->Reset(model_sess_->encoder_session);
+  ASSERT_EQ(model_sess_->encoder_session, nullptr);
 
   model_sess_->encoder_session =
       mnn_zipformer_->Init(mnn_zipformer_->ChunkSize());
-  mnn_zipformer_->Reset(model_sess_->encoder_session);
+  model_sess_->encoder_session =
+      mnn_zipformer_->Reset(model_sess_->encoder_session);
+  ASSERT_EQ(model_sess_->encoder_session, nullptr);
 
   model_sess_->encoder_session =
       mnn_zipformer_->Init(mnn_zipformer_->ChunkSize());
-  mnn_zipformer_->Reset(model_sess_->encoder_session);
+  model_sess_->encoder_session =
+      mnn_zipformer_->Reset(model_sess_->encoder_session);
+  ASSERT_EQ(model_sess_->encoder_session, nullptr);
 
   model_sess_->encoder_session =
       mnn_zipformer_->Init(mnn_zipformer_->ChunkSize());
-  mnn_zipformer_->Reset(model_sess_->encoder_session);
+  model_sess_->encoder_session =
+      mnn_zipformer_->Reset(model_sess_->encoder_session);
+  ASSERT_EQ(model_sess_->encoder_session, nullptr);
 }
 
 TEST_F(TestMnnZipformer, TestModelInference) {
   wav_reader_->Open(test_wav_);
   std::vector<float> pcm(wav_reader_->data(),
                          wav_reader_->data() + wav_reader_->num_samples());
-  mnn_zipformer_->Reset(model_sess_->encoder_session);
+  model_sess_->encoder_session =
+      mnn_zipformer_->Reset(model_sess_->encoder_session);
   model_sess_->encoder_session =
       mnn_zipformer_->Init(mnn_zipformer_->ChunkSize());
 
