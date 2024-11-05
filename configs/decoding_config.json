@@ -1,0 +1,8 @@
+{
+    "decoding": {
+        "type": "rnnt-greedy-decoding",
+        "config": {
+            "max_token_step": 1
+        }
+    }
+}

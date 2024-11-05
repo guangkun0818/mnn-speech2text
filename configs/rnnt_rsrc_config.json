@@ -9,10 +9,5 @@
     },
     "predictor": "sample_data/models/predictor_streaming_step.mnn",
     "joiner": "sample_data/models/joiner_streaming_step.mnn",
-    "decoding": {
-        "type": "rnnt-greedy-decoding",
-        "config": {
-            "max_token_step": 1
-        }
-    }
+    "units_file": "sample_data/units.txt"
 }
