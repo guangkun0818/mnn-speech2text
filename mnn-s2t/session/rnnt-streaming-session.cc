@@ -24,10 +24,12 @@ RnntStreamingSession::RnntStreamingSession(
   // Build Decoding method.
   switch (session_cfg.decoding_cfg.decoding_type) {
     case decoding::DecodingType::kRnntGreedyDecoding:
+      LOG(INFO) << "Decoding method : RnntGreedyDecoding setected.";
       session_rsrc_->decoding = std::make_shared<decoding::RnntGreedyDecoding>(
           rnnt_rsrc_->predictor, rnnt_rsrc_->joiner,
           session_rsrc_->model_session, rnnt_rsrc_->tokenizer,
           session_cfg.decoding_cfg);
+      break;
     default:
       LOG(WARNING) << "Unsupported decoding type.";
       break;
@@ -51,8 +53,10 @@ void RnntStreamingSession::Reset() {
   // Reset Streaming frontend
   session_rsrc_->frontend->Reset();
   // Release encoder session.
-  rnnt_rsrc_->encoder->Reset(session_rsrc_->model_session->encoder_session);
-  // Release predictor/joiner session and decoding states.
+  session_rsrc_->model_session->encoder_session =
+      rnnt_rsrc_->encoder->Reset(session_rsrc_->model_session->encoder_session);
+  // Release predictor/joiner session, which prossessed by decoding method,
+  // and decoding states.
   session_rsrc_->decoding->Reset();
   this->decoded_text_.clear();  // Clear partial results
 }

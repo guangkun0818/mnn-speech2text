@@ -52,7 +52,8 @@ class RnntStreamingSession {
   // is not full chunk.
   void FinalizeSession();
 
-  // Reset session.
+  // Reset session by releasing model session and reseting frontend pipline and
+  // decoding method.
   void Reset();
 
   std::string GetDecodedText() const;

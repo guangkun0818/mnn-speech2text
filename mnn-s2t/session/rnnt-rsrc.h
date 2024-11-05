@@ -24,13 +24,16 @@ struct RnntRsrc {
   std::shared_ptr<models::MnnPredictor> predictor;
   std::shared_ptr<models::MnnJoiner> joiner;
   std::shared_ptr<decoding::SubwordTokenizer> tokenizer;
+
   RnntRsrc(const models::MnnEncoderCfg& enc_cfg,
            const models::MnnPredictorCfg pred_cfg,
            const models::MnnJoinerCfg joiner_cfg, const char* units_file) {
     switch (enc_cfg.enc_type) {
       case models::EncoderType::kZipformer:
+        LOG(INFO) << "Encoder: Zipformer selected.";
         encoder = std::make_shared<models::MnnZipformer>(
             enc_cfg, models::CPU_FORWARD_THREAD_8);
+        break;
       default:
         LOG(WARNING) << "Unsupported encoder type.";
         break;
