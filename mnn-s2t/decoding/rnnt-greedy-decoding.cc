@@ -32,9 +32,10 @@ void RnntGreedyDecoding::Init() {
 }
 
 void RnntGreedyDecoding::Reset() {
-  model_sess_->predictor_session =
-      predictor_->Reset(model_sess_->predictor_session);
-  model_sess_->joiner_session = joiner_->Reset(model_sess_->joiner_session);
+  model_sess_->predictor_session = predictor_->Reset(
+      model_sess_->predictor_session);  // Release Predictor session.
+  model_sess_->joiner_session =
+      joiner_->Reset(model_sess_->joiner_session);  // Release Joiner session.
   this->ResetDecodingStates();
 }
 
