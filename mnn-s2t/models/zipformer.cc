@@ -5,6 +5,8 @@
 
 #include "mnn-s2t/models/zipformer.h"
 
+#include <cstring>
+
 namespace s2t {
 namespace models {
 
@@ -76,9 +78,8 @@ void MnnZipformer::InitStates(mnn::Session* session) {
     if (input.first == "x") {
       continue;  // Skip input.
     }
-    for (int i = 0; i < input.second->elementSize(); i++) {
-      input.second->host<float>()[i] = 0.0f;
-    }
+    std::memset(input.second->host<float>(), 0,
+                sizeof(float) * input.second->elementSize());
   }
 }
 

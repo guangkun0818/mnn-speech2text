@@ -5,6 +5,8 @@
 
 #include "mnn-s2t/models/predictor.h"
 
+#include <cstring>
+
 namespace s2t {
 namespace models {
 
@@ -29,9 +31,8 @@ mnn::Session* MnnPredictor::Init(const int beam_size) {
   this->model_->resizeTensor(prev_states_t, init_input_shape);
 
   // Init predictor state as 0
-  for (int i = 0; i < prev_states_t->elementSize(); i++) {
-    prev_states_t->host<int>()[i] = 0;
-  }
+  std::memset(prev_states_t->host<int>(), 0,
+              sizeof(int) * prev_states_t->elementSize());
 
   std::vector<int> pred_in_shape = {beam_size, 1};  // {beam_size, 1}
   this->model_->resizeTensor(this->model_->getSessionInput(session, "pred_in"),
