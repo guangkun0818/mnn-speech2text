@@ -7,7 +7,10 @@
             "feats_dim": 80
         }
     },
-    "predictor": "sample_data/models/predictor-int8.mnn",
+    "predictor": {
+        "model_path": "sample_data/models/predictor-int8.mnn",
+        "context_size": 5
+    },
     "joiner": "sample_data/models/joinerint8.mnn",
     "units_file": "sample_data/units.txt"
 }

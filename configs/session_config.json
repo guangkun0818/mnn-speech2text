@@ -1,4 +1,8 @@
 {
+    "frontend": {
+        "feat_chunk_size": 77,
+        "pcm_normalize": true
+    },
     "decoding": {
         "type": "rnnt-greedy-decoding",
         "config": {
