@@ -43,6 +43,7 @@ void SetUpRnntEncoderConfig(Json& conf) {
   } else {
     LOG(ERROR)
         << "Unsupported Encoder type, please check rnnt rsrc config setting.";
+    std::abort();
   }
 }
 
@@ -98,6 +99,7 @@ void SetUpSessionConfig(Json& conf) {
   } else {
     LOG(ERROR)
         << "Unsupported decoding type, please check session config setting.";
+    std::abort();
   }
   LOG(INFO) << "Session config built.";
 }
