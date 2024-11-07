@@ -51,7 +51,7 @@ void SetUpRnntPredictorConfig(Json& conf) {
   pred_config.predictor_model = conf["model_path"].ToString();
 }
 
-void SetUpJoinerConfig(Json& conf) {
+void SetUpRnntJoinerConfig(Json& conf) {
   joiner_config.joiner_model = conf["model_path"].ToString();
 }
 
@@ -75,7 +75,7 @@ void BuildRnntRsrc(Json& conf) {
 
   SetUpRnntEncoderConfig(conf["encoder"]);
   SetUpRnntPredictorConfig(conf["predictor"]);
-  SetUpJoinerConfig(conf["joiner"]);
+  SetUpRnntJoinerConfig(conf["joiner"]);
 
   rnnt_rsrc = std::make_shared<s2t::session::RnntRsrc>(
       enc_config, pred_config, joiner_config,
@@ -128,6 +128,13 @@ int main(int argc, char* argv[]) {
   google::InitGoogleLogging(argv[0]);
 
   LOG(INFO) << "原神";
+
+  Json rsrc_conf, sess_conf;
+  LoadJsonConf(FLAGS_rnnt_rsrc_conf, rsrc_conf);
+  LoadJsonConf(FLAGS_session_conf, sess_conf);
+  BuildRnntRsrc(rsrc_conf);
+  SetUpSessionConfig(sess_conf);
+
   std::this_thread::sleep_for(std::chrono::seconds(3));
   LOG(INFO) << "启动!!!!!";
 

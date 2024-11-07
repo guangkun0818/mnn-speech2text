@@ -11,6 +11,8 @@
         "model_path": "sample_data/models/predictor-int8.mnn",
         "context_size": 5
     },
-    "joiner": "sample_data/models/joinerint8.mnn",
+    "joiner": {
+        "model_path": "sample_data/models/joiner-int8.mnn"
+    },
     "units_file": "sample_data/units.txt"
 }
