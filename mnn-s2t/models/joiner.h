@@ -7,6 +7,7 @@
 #define _MNN_S2T_MODEL_JOINER_H_
 
 #include <memory>
+#include <string>
 #include <vector>
 
 #include "glog/logging.h"
@@ -15,23 +16,28 @@
 namespace s2t {
 namespace models {
 
+struct MnnJoinerCfg {
+  std::string joiner_model;
+};
+
 // Joiner of Transducer
 // inputTensors : [ enc_out, pred_out, ]
 // outputTensors: [ logit, ]
 class MnnJoiner {
  public:
-  explicit MnnJoiner(const char* joiner_model);
+  explicit MnnJoiner(const MnnJoinerCfg& cfg, mnn::ScheduleConfig config);
 
   ~MnnJoiner();
 
-  void Init(const int beam_size);
+  mnn::Session* Init(const int beam_size);
 
-  void Reset();
+  mnn::Session* Reset(mnn::Session* session);
 
-  void StreamingStep(mnn::Tensor* enc_out, mnn::Tensor* pred_out);
+  void StreamingStep(mnn::Tensor* enc_out, mnn::Tensor* pred_out,
+                     mnn::Session* session);
 
   // Return logits with shape (beam_size, vocab_size)
-  std::vector<std::vector<float>> GetJoinerOut() const;
+  std::vector<std::vector<float>> GetJoinerOut(mnn::Session* session) const;
 
  private:
   // Model resource.
@@ -39,7 +45,6 @@ class MnnJoiner {
 
   // Forward session.
   mnn::ScheduleConfig config_;
-  mnn::Session* session_;
 };
 
 }  // namespace models

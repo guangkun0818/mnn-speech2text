@@ -15,17 +15,7 @@ class TestNonStreamingFrontend : public ::testing::Test {
  protected:
   void SetUp() {
     wav_reader_ = std::make_shared<WavReader>();
-
-    FbankOptions opts;
-    opts.mel_opts.num_bins = 80;        // 80 dim fbank.
-    opts.mel_opts.low_freq = 20.0f;     // Default setting in lhotes
-    opts.mel_opts.high_freq = -400.0f;  // Default setting in lhotes
-
-    opts.frame_opts.dither = 0.0f;
-    opts.frame_opts.snip_edges =
-        true;                    // Different with default setting of lhotes.
-    opts.energy_floor = 1e-10f;  // EPSILON = 1e-10 in lhotes.
-    frontend_ = std::make_shared<Frontend>(opts, true);
+    frontend_ = std::make_shared<Frontend>(LHOTSE_FBANK_OPTIONS(), true);
   }
 
   std::string test_wav_ = "../sample_data/wavs/2086-149220-0019.wav";
@@ -52,22 +42,10 @@ class TestStreamingFrontend : public ::testing::Test {
     wav_reader_ = std::make_shared<WavReader>();
     feat_dim_ = 80;
 
-    FbankOptions opts;
-
-    opts.mel_opts.num_bins = feat_dim_;  // 80 dim fbank.
-    opts.mel_opts.low_freq = 20.0f;      // Default setting in lhotes
-    opts.mel_opts.high_freq = -400.0f;   // Default setting in lhotes
-
-    opts.frame_opts.dither = 0.0f;
-    opts.frame_opts.snip_edges =
-        true;                    // Different with default setting of lhotes.
-    opts.energy_floor = 1e-10f;  // EPSILON = 1e-10 in lhotes.
-    feat_dim_ = opts.mel_opts.num_bins;
-
     chunk_size_ = 77;
-    frontend_ = std::make_shared<Frontend>(opts, true);
-    streaming_frontend_ =
-        std::make_shared<StreamingFrontend>(opts, chunk_size_, true);
+    frontend_ = std::make_shared<Frontend>(LHOTSE_FBANK_OPTIONS(), true);
+    streaming_frontend_ = std::make_shared<StreamingFrontend>(
+        LHOTSE_FBANK_OPTIONS(), chunk_size_, true);
   }
 
   int32_t feat_dim_;
@@ -104,37 +82,44 @@ TEST_F(TestStreamingFrontend, TestPrecisionCheck) {
   std::vector<std::vector<float>> offline_feats;
   frontend_->EmitFeats(offline_feats);
 
-  streaming_frontend_->AcceptPcms(pcm);
-  std::vector<std::vector<float>> feats_chunk;
+  // Test streaming frontend for 3 times.
+  int iter = 3;
+  while (iter > 0) {
+    streaming_frontend_->AcceptPcms(pcm);
+    std::vector<std::vector<float>> feats_chunk;
 
-  // Precision check with Non-streaming frontend
-  int chunk_id = 0;
-  int num_frames = 0;
-  while (streaming_frontend_->IsReadyForFullChunk()) {
-    streaming_frontend_->EmitFeats(feats_chunk);
+    // Precision check with Non-streaming frontend
+    int chunk_id = 0;
+    int num_frames = 0;
+    while (streaming_frontend_->IsReadyForFullChunk()) {
+      streaming_frontend_->EmitFeats(feats_chunk);
+      num_frames += feats_chunk.size();
+
+      // Presicion check over all elems.
+      for (int frame_id = 0; frame_id < chunk_size_; frame_id++) {
+        for (int j = 0; j < feat_dim_; j++) {
+          ASSERT_FLOAT_EQ(offline_feats[chunk_id * chunk_size_ + frame_id][j],
+                          feats_chunk[frame_id][j]);
+        }
+      }
+      chunk_id++;
+    }
+
+    // Process last chunk.
+    streaming_frontend_->EmitFeats(feats_chunk, true);
     num_frames += feats_chunk.size();
-
-    // Presicion check over all elems.
-    for (int frame_id = 0; frame_id < chunk_size_; frame_id++) {
+    ASSERT_EQ(num_frames, offline_feats.size());
+    for (int frame_id = 0; frame_id < feats_chunk.size(); frame_id++) {
       for (int j = 0; j < feat_dim_; j++) {
         ASSERT_FLOAT_EQ(offline_feats[chunk_id * chunk_size_ + frame_id][j],
                         feats_chunk[frame_id][j]);
       }
     }
-    chunk_id++;
-  }
+    // Enable padding on last chunk.
+    streaming_frontend_->PadIntoFullChunk(feats_chunk);
+    ASSERT_EQ(chunk_size_, feats_chunk.size());
 
-  // Process last chunk.
-  streaming_frontend_->EmitFeats(feats_chunk, true);
-  num_frames += feats_chunk.size();
-  ASSERT_EQ(num_frames, offline_feats.size());
-  for (int frame_id = 0; frame_id < feats_chunk.size(); frame_id++) {
-    for (int j = 0; j < feat_dim_; j++) {
-      ASSERT_FLOAT_EQ(offline_feats[chunk_id * chunk_size_ + frame_id][j],
-                      feats_chunk[frame_id][j]);
-    }
+    streaming_frontend_->Reset();
+    iter--;
   }
-  // Enable padding on last chunk.
-  streaming_frontend_->PadIntoFullChunk(feats_chunk);
-  ASSERT_EQ(chunk_size_, feats_chunk.size());
 }

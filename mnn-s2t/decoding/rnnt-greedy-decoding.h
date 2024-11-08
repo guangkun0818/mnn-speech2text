@@ -15,31 +15,48 @@
 #include "mnn-s2t/decoding/decoding.h"
 #include "mnn-s2t/decoding/tokenizer.h"
 #include "mnn-s2t/models/joiner.h"
+#include "mnn-s2t/models/model-session.h"
 #include "mnn-s2t/models/predictor.h"
 
 namespace s2t {
 namespace decoding {
+
+struct RnntGreedyDecodingStates {
+  std::vector<int> partial_result;  // Partial decoded tokens.
+};
 
 class RnntGreedyDecoding : public DecodingMethod {
  public:
   explicit RnntGreedyDecoding(
       const std::shared_ptr<models::MnnPredictor>& predictor,
       const std::shared_ptr<models::MnnJoiner>& joiner,
+      const std::shared_ptr<models::RnntModelSession>& model_sess,
       const std::shared_ptr<SubwordTokenizer>& tokenizer,
-      size_t max_token_step);
+      const DecodingCfg& cfg);
 
   void Init() override;
+
+  void Reset() override;
 
   inline bool IsBlank(int token) const;
 
   int Argmax(const std::vector<std::vector<float>>& logits) const;
 
-  std::string Decode(mnn::Tensor* enc_out) override;
+  void Decode(mnn::Tensor* enc_out) override;
+
+  std::string GetResults() override;
 
  private:
+  void UpdateStates(const std::vector<int>& tokens);
+
+  void ResetDecodingStates();
+
   std::shared_ptr<models::MnnPredictor> predictor_;
   std::shared_ptr<models::MnnJoiner> joiner_;
+  std::shared_ptr<models::RnntModelSession> model_sess_;
   std::shared_ptr<SubwordTokenizer> tokenizer_;
+  std::shared_ptr<RnntGreedyDecodingStates> decoding_states_;
+
   size_t max_token_step_;
 };
 

@@ -13,11 +13,24 @@
 namespace s2t {
 namespace decoding {
 
+enum DecodingType {
+  kRnntGreedyDecoding = 0x01,
+};
+
+struct DecodingCfg {
+  DecodingType decoding_type = DecodingType::kRnntGreedyDecoding;
+  size_t max_token_step = 1;  // For Greedy Decoding
+  size_t beam_size;           // For Beam Decoding.
+  size_t cutoff_top_k = 4;    // For Beam Decoding.
+};
+
 class DecodingMethod {
  public:
   virtual ~DecodingMethod() {}
   virtual void Init() = 0;
-  virtual std::string Decode(mnn::Tensor* enc_out) = 0;
+  virtual void Reset() = 0;
+  virtual void Decode(mnn::Tensor* enc_out) = 0;
+  virtual std::string GetResults() = 0;
 };
 
 }  // namespace decoding

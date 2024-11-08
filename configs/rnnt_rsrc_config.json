@@ -1,0 +1,18 @@
+{
+    "encoder":{
+        "type": "zipformer",
+        "config": {
+            "model_path": "sample_data/models/encoder-int8.mnn",
+            "chunk_size": 77,
+            "feats_dim": 80
+        }
+    },
+    "predictor": {
+        "model_path": "sample_data/models/predictor-int8.mnn",
+        "context_size": 5
+    },
+    "joiner": {
+        "model_path": "sample_data/models/joiner-int8.mnn"
+    },
+    "units_file": "sample_data/units.txt"
+}

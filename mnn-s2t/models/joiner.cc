@@ -8,53 +8,54 @@
 namespace s2t {
 namespace models {
 
-MnnJoiner::MnnJoiner(const char* joiner_model) {
-  config_.numThread = 8;
-  config_.type = MNNForwardType::MNN_FORWARD_CPU;
-
+MnnJoiner::MnnJoiner(const MnnJoinerCfg& cfg, mnn::ScheduleConfig config)
+    : config_(config) {
   this->model_ = std::shared_ptr<mnn::Interpreter>(
-      mnn::Interpreter::createFromFile(joiner_model));
+      mnn::Interpreter::createFromFile(cfg.joiner_model.c_str()));
   CHECK_NE(this->model_, nullptr);
-  this->session_ = nullptr;
 }
 
-MnnJoiner::~MnnJoiner() { this->Reset(); }
+MnnJoiner::~MnnJoiner() {}
 
-void MnnJoiner::Init(const int beam_size) {
-  this->session_ = model_->createSession(config_);
-  CHECK_NE(this->session_, nullptr);
+mnn::Session* MnnJoiner::Init(const int beam_size) {
+  auto session = model_->createSession(config_);
+  CHECK_NE(session, nullptr);
 
   // Predictor Output shape: {beam_size, 1, pred_out_dim_}
   auto pred_out_shape =
-      this->model_->getSessionInput(this->session_, "pred_out")->shape();
+      this->model_->getSessionInput(session, "pred_out")->shape();
   pred_out_shape[0] = beam_size;
 
-  this->model_->resizeTensor(
-      this->model_->getSessionInput(this->session_, "pred_out"),
-      pred_out_shape);
+  this->model_->resizeTensor(this->model_->getSessionInput(session, "pred_out"),
+                             pred_out_shape);
 
   // Resize session with input beam_size.
-  this->model_->resizeSession(this->session_);
+  this->model_->resizeSession(session);
+  return session;
 }
 
-void MnnJoiner::Reset() {
-  if (this->session_) {
-    CHECK(this->model_->releaseSession(this->session_));
-    this->session_ = nullptr;
+mnn::Session* MnnJoiner::Reset(mnn::Session* session) {
+  if (session) {
+    CHECK(this->model_->releaseSession(session));
   }
+  return nullptr;
 }
 
-void MnnJoiner::StreamingStep(mnn::Tensor* enc_out, mnn::Tensor* pred_out) {
-  this->model_->getSessionInput(this->session_, "enc_out")
+void MnnJoiner::StreamingStep(mnn::Tensor* enc_out, mnn::Tensor* pred_out,
+                              mnn::Session* session) {
+  CHECK_NE(session, nullptr);
+  this->model_->getSessionInput(session, "enc_out")
       ->copyFromHostTensor(enc_out);
-  this->model_->getSessionInput(this->session_, "pred_out")
+  this->model_->getSessionInput(session, "pred_out")
       ->copyFromHostTensor(pred_out);
 
-  this->model_->runSession(this->session_);
+  this->model_->runSession(session);
 }
 
-std::vector<std::vector<float>> MnnJoiner::GetJoinerOut() const {
-  auto logit_t = this->model_->getSessionOutput(this->session_, "logit");
+std::vector<std::vector<float>> MnnJoiner::GetJoinerOut(
+    mnn::Session* session) const {
+  CHECK_NE(session, nullptr);
+  auto logit_t = this->model_->getSessionOutput(session, "logit");
   auto logit_shape = logit_t->shape();
   std::vector<std::vector<float>> logit_vec(
       logit_shape[0],
