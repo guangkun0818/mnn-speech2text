@@ -129,7 +129,7 @@ int main(int argc, char* argv[]) {
   gflags::ParseCommandLineFlags(&argc, &argv, false);
   google::InitGoogleLogging(argv[0]);
 
-  LOG(INFO) << "原神";
+  LOG(INFO) << "Speech2text transducer starts...";
 
   Json rsrc_conf, sess_conf;
   LoadJsonConf(FLAGS_rnnt_rsrc_conf, rsrc_conf);
@@ -137,8 +137,22 @@ int main(int argc, char* argv[]) {
   BuildRnntRsrc(rsrc_conf);
   SetUpSessionConfig(sess_conf);
 
-  std::this_thread::sleep_for(std::chrono::seconds(3));
-  LOG(INFO) << "启动!!!!!";
+  // Create thread pool.
+  s2t::utils::ThreadPool* thread_pool =
+      new s2t::utils::ThreadPool(FLAGS_num_thread);
+
+  std::ifstream datamap(FLAGS_dataset_json);
+  std::string line;
+  while (std::getline(datamap, line)) {
+    auto test_entry = Json::Load(line);
+    CHECK(test_entry.hasKey("audio_filepath"));
+
+    thread_pool->enqueue(Speech2TextRnnt,
+                         test_entry["audio_filepath"].ToString());
+  }
+
+  delete thread_pool;
+  LOG(INFO) << "Done.";
 
   return 0;
 }
