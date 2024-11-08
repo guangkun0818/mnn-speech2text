@@ -15,7 +15,7 @@ const float NORMALIZE_FACTOR = 1.0f / 32768;  // For 16k 16bit wavs.
 
 // Const Setting refered to LhotseKaldiFeatFbank()
 // https://github.com/guangkun0818/speech2text/blob/main/dataset/frontend/frontend.py
-FbankOptions LHOTEST_FBANK_OPTIONS() {
+FbankOptions LHOTSE_FBANK_OPTIONS() {
   FbankOptions FBANK_OPTIONS;
 
   FBANK_OPTIONS.mel_opts.num_bins = 80;        // 80 dim fbank.

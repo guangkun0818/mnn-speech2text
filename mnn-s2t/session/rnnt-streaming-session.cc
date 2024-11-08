@@ -16,7 +16,7 @@ RnntStreamingSession::RnntStreamingSession(
 
   // Build Streaming frontend.
   session_rsrc_->frontend = std::make_shared<frontend::StreamingFrontend>(
-      frontend::LHOTEST_FBANK_OPTIONS(), session_cfg.feat_chunk_size,
+      frontend::LHOTSE_FBANK_OPTIONS(), session_cfg.feat_chunk_size,
       session_cfg.pcm_normalize);
 
   // Build model session.

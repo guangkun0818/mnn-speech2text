@@ -15,7 +15,7 @@ class TestNonStreamingFrontend : public ::testing::Test {
  protected:
   void SetUp() {
     wav_reader_ = std::make_shared<WavReader>();
-    frontend_ = std::make_shared<Frontend>(LHOTEST_FBANK_OPTIONS(), true);
+    frontend_ = std::make_shared<Frontend>(LHOTSE_FBANK_OPTIONS(), true);
   }
 
   std::string test_wav_ = "../sample_data/wavs/2086-149220-0019.wav";
@@ -43,9 +43,9 @@ class TestStreamingFrontend : public ::testing::Test {
     feat_dim_ = 80;
 
     chunk_size_ = 77;
-    frontend_ = std::make_shared<Frontend>(LHOTEST_FBANK_OPTIONS(), true);
+    frontend_ = std::make_shared<Frontend>(LHOTSE_FBANK_OPTIONS(), true);
     streaming_frontend_ = std::make_shared<StreamingFrontend>(
-        LHOTEST_FBANK_OPTIONS(), chunk_size_, true);
+        LHOTSE_FBANK_OPTIONS(), chunk_size_, true);
   }
 
   int32_t feat_dim_;

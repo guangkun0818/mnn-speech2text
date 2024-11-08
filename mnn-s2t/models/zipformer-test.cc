@@ -19,7 +19,7 @@ class TestMnnZipformer : public ::testing::Test {
     wav_reader_ = std::make_shared<frontend::WavReader>();
 
     frontend_ = std::make_shared<frontend::StreamingFrontend>(
-        frontend::LHOTEST_FBANK_OPTIONS(), /*chunk_size=*/77,
+        frontend::LHOTSE_FBANK_OPTIONS(), /*chunk_size=*/77,
         /*pcm_normalize=*/true);
 
     models::MnnEncoderCfg cfg;
