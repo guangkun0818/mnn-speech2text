@@ -14,10 +14,10 @@
 namespace s2t {
 namespace models {
 
-mnn::ScheduleConfig CPU_FORWARD_THREAD_8 = {
+static mnn::ScheduleConfig CPU_FORWARD_THREAD_8 = {
     .type = MNNForwardType::MNN_FORWARD_CPU,
     .numThread = 8,
-};  // TODO: adaptation for edge device.
+};  // TODO: adaptation for edge device.;
 
 struct RnntModelSession {
   mnn::Session* encoder_session = nullptr;
