@@ -221,7 +221,6 @@ void RnntBeamDecoding::UpdateBeams(
     }
     new_beams.resize(this->beam_size_);
   }
-  new_beams.resize(this->beam_size_);
   this->ResetDecodingStates();
   new_beams.swap(this->beams_);
 }
