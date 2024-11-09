@@ -214,8 +214,12 @@ void RnntBeamDecoding::UpdateBeams(
             });
   // Keep top_beam_size beams while release others;
   if (new_beams.size() > this->beam_size_) {
-    new_beams.resize(this->beam_size_);  // Delete pruned beam with resize.
+    for (int beam_id = 4; beam_id < new_beams.size(); ++beam_id) {
+      delete new_beams[beam_id];  // Delete pruned beam.
+    }
+    new_beams.resize(this->beam_size_);
   }
+  new_beams.resize(this->beam_size_);
   this->ResetDecodingStates();
   new_beams.swap(this->beams_);
 }
