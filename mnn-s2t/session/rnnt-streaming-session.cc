@@ -24,8 +24,15 @@ RnntStreamingSession::RnntStreamingSession(
   // Build Decoding method.
   switch (session_cfg.decoding_cfg.decoding_type) {
     case decoding::DecodingType::kRnntGreedyDecoding:
-      LOG(INFO) << "Decoding method : RnntGreedyDecoding setected.";
+      LOG(INFO) << "Decoding method: RnntGreedyDecoding setected.";
       session_rsrc_->decoding = std::make_shared<decoding::RnntGreedyDecoding>(
+          rnnt_rsrc_->predictor, rnnt_rsrc_->joiner,
+          session_rsrc_->model_session, rnnt_rsrc_->tokenizer,
+          session_cfg.decoding_cfg);
+      break;
+    case decoding::DecodingType::kRnntBeamDecoding:
+      LOG(INFO) << "Decoding method: RnntBeamDecoding setected.";
+      session_rsrc_->decoding = std::make_shared<decoding::RnntBeamDecoding>(
           rnnt_rsrc_->predictor, rnnt_rsrc_->joiner,
           session_rsrc_->model_session, rnnt_rsrc_->tokenizer,
           session_cfg.decoding_cfg);
