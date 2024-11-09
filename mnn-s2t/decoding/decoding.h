@@ -15,6 +15,7 @@ namespace decoding {
 
 enum DecodingType {
   kRnntGreedyDecoding = 0x01,
+  kRnntBeamDecoding = 0x02,
 };
 
 struct DecodingCfg {
