@@ -47,6 +47,8 @@ RnntBeamDecoding::RnntBeamDecoding(
       cutoff_top_k_(cfg.cutoff_top_k),
       on_start_(true) {}
 
+RnntBeamDecoding::~RnntBeamDecoding() { this->Reset(); }
+
 void RnntBeamDecoding::Init() {
   // Decoding setup, init predictor state, joiner is cache-free. Deocding
   // process should be start with <blank_id> = 0.

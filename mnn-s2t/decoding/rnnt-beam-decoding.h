@@ -53,6 +53,8 @@ class RnntBeamDecoding : public DecodingMethod {
       const std::shared_ptr<SubwordTokenizer>& tokenizer,
       const DecodingCfg& cfg);  // (TODO) support nnlm.
 
+  ~RnntBeamDecoding();
+
   void Init() override;
 
   void Reset() override;
