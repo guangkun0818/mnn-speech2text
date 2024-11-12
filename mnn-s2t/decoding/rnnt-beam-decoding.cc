@@ -20,6 +20,8 @@ DecodingBeam::DecodingBeam(const std::vector<int>& updated_decoded_tokens,
   score = updated_score;
   pred_out = mnn::Tensor::create<float>(last_pred_out->shape(), NULL,
                                         MNN::Tensor::CAFFE);
+
+  // Cache pred_out/pred_state tensor.
   memcpy(pred_out->host<float>(), last_pred_out->host<float>(),
          sizeof(float) * last_pred_out->elementSize());
   pred_state = mnn::Tensor::create<int>(last_pred_state->shape(), NULL,
@@ -93,16 +95,19 @@ void RnntBeamDecoding::Decode(mnn::Tensor* enc_out) {
   auto tot_time_steps = enc_out->shape()[1];  // (1, tot_time_steps, enc_dim)
   auto enc_dim = enc_out->shape()[2];
 
+  // Create temp frame of encoder output.
   std::vector<int> enc_frame_shape = {1, /*tot_time_step=*/1,
                                       /*enc_dim=*/enc_dim};
   auto enc_frame =
       mnn::Tensor::create<float>(enc_frame_shape, NULL, MNN::Tensor::CAFFE);
 
+  // Create temp tensor for concat pred_out with in beam.
   auto pred_out_dim = predictor_->GetPredOut(model_sess_->predictor_session)
                           ->shape()[2];  // pred_out shape: {1, 1, pred_out_dim}
   std::vector<int> pred_out_beam_shape = {beam_size_, 1, pred_out_dim};
   auto pred_out_beam =
       mnn::Tensor::create<float>(pred_out_beam_shape, NULL, MNN::Tensor::CAFFE);
+
   int curr_time_step = 0;
   while (curr_time_step < tot_time_steps) {
     // Slice encoder_out as frame
@@ -163,11 +168,12 @@ void RnntBeamDecoding::BuildBeamPredOut(mnn::Tensor* pred_out_beam) {
 }
 
 void RnntBeamDecoding::UpdateBeams(
-    const std::vector<std::vector<float>>& log_probs, bool is_start) {
+    const std::vector<std::vector<float>>& log_probs, bool on_start) {
   // Update decoding state with log_probs of current time step.
   std::vector<DecodingBeam*> new_beams;
 
-  int valid_beam_size = is_start ? 1 : this->beams_.size();
+  // Init beams is copy of same one, which means valid beam_size = 1.
+  int valid_beam_size = on_start ? 1 : this->beams_.size();
   for (int beam_id = 0; beam_id < valid_beam_size; ++beam_id) {
     auto beam = this->beams_[beam_id];
     std::vector<size_t> token_idxs(log_probs[beam_id].size());  // Num of tokens

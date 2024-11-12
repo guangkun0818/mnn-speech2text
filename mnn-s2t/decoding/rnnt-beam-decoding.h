@@ -66,11 +66,13 @@ class RnntBeamDecoding : public DecodingMethod {
   std::string GetResults() override;
 
  private:
+  // Concat pred_outs with beams in to batch for joiner forward.
   void BuildBeamPredOut(mnn::Tensor* beamed_pred_out);
 
   void UpdateBeams(const std::vector<std::vector<float>>& log_probs,
-                   bool is_start = false);
+                   bool on_start = false);
 
+  // Release deocding beams.
   void ResetDecodingStates();
 
   std::shared_ptr<models::MnnPredictor> predictor_;
