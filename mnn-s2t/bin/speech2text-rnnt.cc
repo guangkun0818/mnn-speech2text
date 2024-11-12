@@ -17,9 +17,9 @@
 
 DEFINE_string(rnnt_rsrc_conf, "configs/rnnt_rsrc_config.json",
               "Config of rnnt resource.");
-DEFINE_string(session_conf, "configs/decoding_config.json",
+DEFINE_string(session_conf, "configs/session_config.json",
               "Config of Rnnt Asr session.");
-DEFINE_string(dataset_json, "runtime/config/test_data.json",
+DEFINE_string(dataset_json, "sample_data/test_data.json",
               "Dataset.json, Test dataset.");
 DEFINE_int32(num_thread, 4, "Num of threads");
 
@@ -96,6 +96,13 @@ void SetUpSessionConfig(Json& conf) {
         s2t::decoding::DecodingType::kRnntGreedyDecoding;
     session_config.decoding_cfg.max_token_step =
         conf["decoding"]["config"]["max_token_step"].ToInt();
+  } else if (conf["decoding"]["type"].ToString() == "rnnt-beam-decoding") {
+    session_config.decoding_cfg.decoding_type =
+        s2t::decoding::DecodingType::kRnntBeamDecoding;
+    session_config.decoding_cfg.beam_size =
+        conf["decoding"]["config"]["beam_size"].ToInt();
+    session_config.decoding_cfg.cutoff_top_k =
+        conf["decoding"]["config"]["cutoff_top_k"].ToInt();
   } else {
     LOG(ERROR)
         << "Unsupported decoding type, please check session config setting.";
@@ -104,8 +111,8 @@ void SetUpSessionConfig(Json& conf) {
   LOG(INFO) << "Session config built.";
 }
 
-// Threading task by building each rnnt streaming session on every audio request
-// flushed in.
+// Threading task by building each rnnt streaming session on every audio
+// request flushed in.
 void Speech2TextRnnt(const std::string& wave_file) {
   auto wave_reader = std::make_unique<s2t::frontend::WavReader>();
   auto session = std::make_unique<s2t::session::RnntStreamingSession>(
