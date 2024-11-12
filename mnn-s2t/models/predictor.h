@@ -34,9 +34,17 @@ class MnnPredictor {
 
   mnn::Session* Reset(mnn::Session* session);
 
+  // For rnnt greedy decoding.
   void StreamingStep(const std::vector<int>& pred_in, mnn::Session* session);
 
+  // For rnnt beam decoding, which wont automaticly update states.
+  void StreamingStep(const std::vector<int>& pred_in, mnn::Tensor* prev_states,
+                     mnn::Session* session);
+
   mnn::Tensor* GetPredOut(mnn::Session* session);
+
+  // For rnnt beam decoding.
+  mnn::Tensor* GetPredState(mnn::Session* session);
 
  private:
   // Model resource.

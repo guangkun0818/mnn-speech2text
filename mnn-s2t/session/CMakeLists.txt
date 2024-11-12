@@ -5,8 +5,7 @@ enable_testing()
 # Rnnt session lib
 add_library(rnnt_session SHARED rnnt-streaming-session.cc) # shared
 
-target_link_libraries(rnnt_session encoder_shared predictor_shared
-                      joiner_shared frontend_shared decoding_shared)
+target_link_libraries(rnnt_session model_shared frontend_shared decoding_shared)
 
 # Unittest of Rnnt session.
 add_executable(rnnt-streaming-session-test rnnt-streaming-session-test.cc)

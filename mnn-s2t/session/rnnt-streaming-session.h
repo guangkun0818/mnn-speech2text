@@ -10,6 +10,7 @@
 #include <string>
 
 #include "mnn-s2t/decoding/decoding.h"
+#include "mnn-s2t/decoding/rnnt-beam-decoding.h"
 #include "mnn-s2t/decoding/rnnt-greedy-decoding.h"
 #include "mnn-s2t/frontend/frontend-pipeline.h"
 #include "mnn-s2t/models/model-session.h"

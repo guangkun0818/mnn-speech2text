@@ -14,10 +14,8 @@ set(frontend_src
 
 # frontend lib
 add_library(frontend_shared SHARED ${frontend_src}) # shared
-add_library(frontend_static STATIC ${frontend_src}) # static
 
 target_link_libraries(frontend_shared glog)
-target_link_libraries(frontend_static glog)
 
 # Unittest of kaldi-fbank-feature.
 add_executable(kaldi-fbank-test kaldi-fbank-feature-test.cc)

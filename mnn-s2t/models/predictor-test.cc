@@ -46,9 +46,23 @@ TEST_F(TestMnnPredictor, TestPredictorInit) {
 TEST_F(TestMnnPredictor, TestPredictorStreamingStep) {
   model_sess_->predictor_session =
       mnn_predictor_->Reset(model_sess_->predictor_session);
-  model_sess_->predictor_session = mnn_predictor_->Init(4);
+  model_sess_->predictor_session = mnn_predictor_->Init(1);
 
-  std::vector<int> pred_in = {1, 2, 3, 4};
+  std::vector<int> pred_in = {1};
   mnn_predictor_->StreamingStep(pred_in, model_sess_->predictor_session);
   mnn_predictor_->GetPredOut(model_sess_->predictor_session)->print();
+  mnn_predictor_->GetPredState(model_sess_->predictor_session)->print();
+}
+
+TEST_F(TestMnnPredictor, TestPredictorStreamingStepForBeamSearch) {
+  model_sess_->predictor_session =
+      mnn_predictor_->Reset(model_sess_->predictor_session);
+  model_sess_->predictor_session = mnn_predictor_->Init(1);
+
+  std::vector<int> pred_in = {1};
+  mnn_predictor_->StreamingStep(
+      pred_in, mnn_predictor_->GetPredState(model_sess_->predictor_session),
+      model_sess_->predictor_session);
+  mnn_predictor_->GetPredOut(model_sess_->predictor_session)->print();
+  mnn_predictor_->GetPredState(model_sess_->predictor_session)->print();
 }

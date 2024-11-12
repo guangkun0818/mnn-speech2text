@@ -4,9 +4,10 @@
         "pcm_normalize": true
     },
     "decoding": {
-        "type": "rnnt-greedy-decoding",
+        "type": "rnnt-beam-decoding",
         "config": {
-            "max_token_step": 1
+            "beam_size": 4,
+            "cutoff_top_k": 4
         }
     }
 }

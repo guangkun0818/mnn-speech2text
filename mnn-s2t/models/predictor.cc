@@ -68,9 +68,31 @@ void MnnPredictor::StreamingStep(const std::vector<int>& pred_in,
           this->model_->getSessionOutput(session, "next_states"));
 }
 
+void MnnPredictor::StreamingStep(const std::vector<int>& pred_in,
+                                 mnn::Tensor* prev_states,
+                                 mnn::Session* session) {
+  CHECK_NE(session, nullptr);
+  auto pred_in_t = this->model_->getSessionInput(session, "pred_in");
+  CHECK_EQ(pred_in_t->elementSize(), pred_in.size());
+
+  // Copy input into session.
+  for (int i = 0; i < pred_in_t->elementSize(); i++) {
+    pred_in_t->host<int>()[i] = pred_in[i];
+  }
+
+  this->model_->getSessionInput(session, "prev_states")
+      ->copyFromHostTensor(prev_states);
+  this->model_->runSession(session);
+}
+
 mnn::Tensor* MnnPredictor::GetPredOut(mnn::Session* session) {
   CHECK_NE(session, nullptr);
   return this->model_->getSessionOutput(session, "pred_out");
+}
+
+mnn::Tensor* MnnPredictor::GetPredState(mnn::Session* session) {
+  CHECK_NE(session, nullptr);
+  return this->model_->getSessionOutput(session, "next_states");
 }
 
 }  // namespace models
