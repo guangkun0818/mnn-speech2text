@@ -6,7 +6,7 @@ This repo offer a simple fast `MNN` inference runtime of [speech2text](https://g
 ```bash
 bash build.sh
 ```
-Run inference with `thread_pool` like below. Please check configs from `configs/` and `sample_data/` for inference setting. 
+Run inference with `thread_pool` like below. Please check configs from `configs/` and `sample_data/` for inference setting. Both `rnnt-greedy-decoding` and `rnnt-beam-decoding`supported.
 ```bash
 ./build/mnn-s2t/bin/speech2text-rnnt \
     --rnnt_rsrc_conf=configs/rnnt_rsrc_config.json \
