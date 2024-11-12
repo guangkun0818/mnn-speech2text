@@ -39,11 +39,8 @@ struct DecodingBeam {
   ~DecodingBeam();  // Release pred_state/pred_out tensor.
 };
 
-struct RnntBeamDecodingStates {
-  std::vector<std::shared_ptr<DecodingBeam>>
-      beams;  // where beams[0] is best beam.
-};
-
+// Restrict the max_token_step = 1 of each time step taking advantage
+// of spike performance of rnnt greedy decoding for better performance.
 class RnntBeamDecoding : public DecodingMethod {
  public:
   explicit RnntBeamDecoding(

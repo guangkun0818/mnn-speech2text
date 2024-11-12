@@ -3,7 +3,7 @@
 cmake_minimum_required(VERSION 3.11 FATAL_ERROR)
 
 project(
-  mnn-s2trt
+  mnn-s2t
   LANGUAGES CXX C
   VERSION 0.1)
 
