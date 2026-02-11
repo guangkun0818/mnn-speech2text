@@ -9,7 +9,7 @@
 # C++ runtime clang-format 16.0.0
 find ./mnn-s2t/ -iname "*.h" -o \
     -iname "*.cc" -o -iname "*.c" \
-    -o -iname "*.cpp" | xargs clang-format -style=Google -i
+    -o -iname "*.cpp" | xargs clang-format -style=file:.clang-format -i
 
 # CMakes cmake-format version 0.6.13
 find ./cmake/ -iname "*.cmake" | xargs cmake-format -i

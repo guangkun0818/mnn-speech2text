@@ -1,3 +1,7 @@
 build/
 .vscode/
 .__convert_external_data.bin
+
+# clangd
+.clangd
+.cache
