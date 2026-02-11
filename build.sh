@@ -6,7 +6,9 @@
 
 mkdir -p build
 
+# Build with mnn converter.
 cd build && cmake .. \
-    -DMNN_BUILD_CONVERTER=ON # Build mnn converter.
+  -DMNN_BUILD_CONVERTER=ON \
+  -DCMAKE_COMPILE_COMMANDS=ON
 
-make -j4
+make -j32
